@@ -1,0 +1,21 @@
+{
+  "version": 1.0,
+  "compressedMD5": "ccd8a4084986dbbceda36a423d829702",
+  "downloadUrl": "https://github.com/davidferguson/pibakery-blocks/releases/download/v0.1.0/pibakery-blocks.zip",
+  "loadOrder": [
+    "packageinstall",
+    "lampinstall",
+    "vncserver",
+    "vncstart",
+    "wifisetup",
+    "downloadfile",
+    "bootbehaviour",
+    "changepass",
+    "sethostname",
+    "runcommand",
+    "runpython",
+    "deletefile",
+    "reboot",
+    "shutdown"
+  ]
+}

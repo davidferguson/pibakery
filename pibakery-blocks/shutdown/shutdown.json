@@ -1,0 +1,11 @@
+{
+	"name": "shutdown",
+	"text": "Shutdown",
+	"script": "shutdown.sh",
+	"args": [],
+	"network": false,
+	"continue": false,
+	"type": "other",
+	"shortDescription":"Shuts down your Raspberry Pi",
+	"longDescription":"Exactly what it says on the block, this will shut down your Raspberry Pi."
+}

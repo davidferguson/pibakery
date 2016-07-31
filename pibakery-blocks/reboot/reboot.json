@@ -1,0 +1,11 @@
+{
+	"name": "reboot",
+	"text": "Reboot",
+	"script": "reboot.sh",
+	"args": [],
+	"network": false,
+	"continue": false,
+	"type": "other",
+	"shortDescription":"Reboots your Raspberry Pi",
+	"longDescription":"Exactly what it says on the block, this will reboot your Raspberry Pi."
+}

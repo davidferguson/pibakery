@@ -1,0 +1,22 @@
+{
+	"name": "downloadfile",
+	"text": "Download file: %1\\nSave to: %2",
+	"script": "downloadFile.sh",
+	"args": [
+		{
+			"type": "text",
+			"default": "http://example.com/my-file",
+			"maxLength":0
+		},
+		{
+			"type": "text",
+			"default": "/home/pi/new-name",
+			"maxLength":0
+		}
+	],
+	"network": true,
+	"continue": true,
+	"type": "network",
+	"shortDescription":"Download a file from the internet to a location on your Raspberry Pi. This block requires an internet connection to work.",
+	"longDescription":"This block allows you to enter a remote URL of a file along with a save location, and it will download the file to that location. As this block will download the file from the internet, an internet connection is required to use this block."
+}

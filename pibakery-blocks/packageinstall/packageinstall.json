@@ -1,0 +1,17 @@
+{
+	"name": "packageinstall",
+	"text": "Install Package: %1",
+	"script": "packageInstall.sh",
+	"args": [
+		{
+			"type": "text",
+			"default": "package-name",
+			"maxLength":0
+		}
+	],
+	"network": true,
+	"continue": true,
+	"type": "software",
+	"shortDescription":"Install any package from the Raspbian repositories. Internet connection required.",
+	"longDescription":"This block is exactly the same as running apt-get install, and allows you to easily install any package from the Raspbian repositories. An internet connection will be required for this to work."
+}

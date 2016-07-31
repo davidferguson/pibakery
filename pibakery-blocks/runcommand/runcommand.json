@@ -1,0 +1,21 @@
+{
+	"name": "runcommand",
+	"text": "Run Command: %1\\nAs user: %2",
+	"script": "runCommand.sh",
+	"args": [
+		{
+			"type": "text",
+			"default": "chmod +x /my/script",
+			"maxLength":0
+		},
+		{
+			"type": "menu",
+			"options": ["pi", "root"]
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "other",
+	"shortDescription":"Run a command as either the user pi or the root user.",
+	"longDescription":"This block allows you to enter a command, which will be run on the command-line. You can choose for youc command to be run either as the normal 'pi' user, or for commands that require administrator rights, the 'root' user."
+}

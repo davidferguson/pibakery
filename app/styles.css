@@ -1,0 +1,253 @@
+/*
+    PiBakery - The easiest way to setup a Raspberry Pi
+    Copyright (C) 2016  David Ferguson
+
+    This file is part of PiBakery.
+
+    PiBakery is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    PiBakery is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with PiBakery.  If not, see <http://www.gnu.org/licenses/>.
+
+    PiBakery uses Google Blockly which is licensed under the Apache
+    License Version 2.0, a copy of which can be found in the file
+    ./app/blockly/LICENSE
+
+    PiBakery uses Win32DiskImager (Image Writer for Windows) which is
+    licensed under the GNU General Public License as published by the
+    Free Software Foundation, version 2 or later, a copy of which can
+    be found in the file ./CommandLineDiskImager/GPL-2
+
+    PiBakery uses p7zip which is licensed under the GNU General Public
+    License as published by the Free Software Foundation, version 2.1 or
+    later, a copy of which can be found in the file p7zip-license.txt
+
+    PiBakery uses 7zip (7za) which is licensed under the GNU Lesser
+    General Public License as published by the Free Software Foundation,
+    version 2.1 or later, a copy of which can be found in the file
+    7zip-license.txt
+*/
+
+html {
+  overflow: hidden;
+  height: 100%;
+}
+body
+{
+	font-family:Arial, sans-serif;
+	font-size: 16pt;
+	background: white;
+	margin: 0px;
+  height: 100%;
+  overflow: auto;
+}
+#header
+{
+	background-color: #c6c6c6;
+	width: 100%;
+	height: 70px;
+}
+#credits
+{
+  text-align: center;
+  width: 100%;
+  margin-top: 90px;
+}
+#blockly
+{
+	border:0px solid #CCC;
+	padding-left:0;
+	height: 100%;
+}
+#blockly_editor
+{
+	width:100%;
+	height: calc(100% - 70px);
+  display: none;
+}
+.blocklyToolboxDiv, #header {
+  -webkit-user-select: none;
+}
+#description
+{
+	width:49%;
+	float:right;
+	margin-top:0;
+}
+#button_run
+{
+	margin-left:2%;
+}
+#logo
+{
+  font-size: 52px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 3px;
+  float:left;
+  height:calc(100% - 3px);
+}
+.headerBtn
+{
+  width: 40px;
+  margin-left: 5px;
+  margin-right: 5px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 13px;
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 7px;
+  float:right;
+  height:calc(100% - 7px);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.headerBtn p
+{
+  margin-top:4px;
+}
+.headerBtn img
+{
+  margin-top:2px;
+}
+#flashSD {
+  margin-left: 40px;
+}
+#sdImage
+{
+  height:35px;
+  cursor:pointer;
+}
+#hider
+{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background-color: rgba(100,100,100,0.5);
+}
+#sdSelector
+{
+  width: 250px;
+  height: 80px;
+  background-color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -40px;
+  margin-left: -126px;
+  border-radius: 7px;
+  text-align: center;
+}
+#sdChoice
+{
+  width: 200px;
+  margin-top: 20px;
+}
+#writeButton
+{
+  width: 100px;
+  margin-top: 12px;
+  margin-left: 10px;
+}
+#writingMessage
+{
+  width: 250px;
+  height: 200px;
+  background-color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -100px;
+  margin-left: -126px;
+  border-radius: 7px;
+  text-align: center;
+}
+#writeProgress
+{
+  margin-top: 120px;
+}
+#writeProgressbar
+{
+  height: 10px;
+  margin-top: -10px;
+}
+#writeAnimation
+{
+  max-width: 160px;
+  max-height: 90px;
+}
+.updateAnimation
+{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+#closeBtn
+{
+  margin-top: -7px;
+}
+.infoParagraph {
+  font-size: 12px;
+  margin-left: 6px;
+  margin-right: 6px;
+}
+.blockInfo {
+  font-size: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.spinner {
+  margin: 100px auto 0;
+  width: 70px;
+  text-align: center;
+}
+.spinner > div {
+  width: 18px;
+  height: 18px;
+  background-color: black;
+
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+  0%, 80%, 100% { -webkit-transform: scale(0) }
+  40% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 40% {
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+  }
+}

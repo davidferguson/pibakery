@@ -1,0 +1,16 @@
+{
+	"name": "bootbehaviour",
+	"text": "Set Boot Option to %1",
+	"script": "bootbehaviour.sh",
+	"args": [
+		{
+			"type": "menu",
+			"options": ["Console", "Console logged in", "Desktop", "Desktop logged in"]
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "setting",
+	"shortDescription":"Alter what happens when you power on your Raspberry Pi. Requires reboot to take effect",
+	"longDescription":"When you power on you Raspberry Pi, you can choose what you want to happen. You can either have it open the Desktop or just the text console, and in both of these cases you can choose whether you want to have the Raspberry Pi automatically log in for you or not."
+}
