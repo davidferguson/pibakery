@@ -36,8 +36,6 @@
 
 'use strict'
 
-var extractProgress
-
 var drivelist = require('drivelist')
 var imageWrite = require('resin-image-write')
 var exec = require('child_process').exec
@@ -63,19 +61,38 @@ var validation = []
 var firstBoot = true
 var currentMode = 'write'
 var piBakeryPath
+var extractProgress
+
+/**
+  * @desc defines the os folder location for Windows and Mac
+  * @return string - the location of the os folder
+*/
+function getOsPath() {
+  if( process.platform == 'darwin' ) {
+    // Mac stores the OS in Application Support
+    return path.normalize('/Library/Application Support/PiBakery/os/')
+  }
+  else if( process.platform == 'win32' ) {
+    // Windows stores the OS in install directory
+    return path.normalize(__dirname + '/../os/')
+  }
+  else {
+    return null
+  }
+}
 
 /**
   * @desc checks that the os and blocks exist, and sets up PiBakery
   * @return null
 */
 function initialise () {
-  fs.stat(path.normalize(__dirname + '/../os/raspbian-pibakery.img'), function (error, stats) {
+  fs.stat(path.normalize(getOsPath() + 'raspbian-pibakery.img'), function (error, stats) {
     if (error) {
       console.error(error)
-      fs.stat(path.normalize(__dirname + '/../os/info.json'), function (error, stats) {
+      fs.stat(path.normalize(getOsPath() + 'info.json'), function (error, stats) {
         if (error) {
           console.error(error)
-          fs.writeFile(path.normalize(__dirname + '/../os/info.json'), '', function (error) {
+          fs.writeFile(path.normalize(getOsPath() + 'info.json'), '', function (error) {
             if (error) {
               console.error(error)
               // Well, I have no idea what to do now. Reinstall?
@@ -91,7 +108,7 @@ function initialise () {
         }
       })
     }
-    fs.stat(path.normalize(__dirname + '/../os/info.json'), function (error, stats) {
+    fs.stat(path.normalize(getOsPath() + 'info.json'), function (error, stats) {
       if (error) {
         console.error(error)
         fixRaspbian(2)
@@ -204,7 +221,7 @@ function fixRaspbian (errorType) {
             }
             if( (response.statusCode == 200) ) {
               var raspbianVersions = JSON.parse(body)
-              md5File(path.normalize(__dirname + '/../os/raspbian-pibakery.img'), function (error, sum) {
+              md5File(path.normalize(getOsPath() + 'raspbian-pibakery.img'), function (error, sum) {
                 if (error) {
                   console.error(error)
                   alert('Unable to verify Raspbian. Please try again later, or reinstall PiBakery.')
@@ -212,7 +229,7 @@ function fixRaspbian (errorType) {
                 }
                 for ( var i = 0; i < raspbianVersions.length; i++) {
                   if (raspbianVersions[i].hash == sum) {
-                    fs.writeJson(path.normalize(__dirname + '/../os/info.json'), {version: raspbianVersions[i].version, uncompressedMD5: raspbianVersions[i].hash, raspbianDate: raspbianVersions[i].original}, function (error) {
+                    fs.writeJson(path.normalize(getOsPath() + 'info.json'), {version: raspbianVersions[i].version, uncompressedMD5: raspbianVersions[i].hash, raspbianDate: raspbianVersions[i].original}, function (error) {
                       if (error) {
                         console.error(error)
                         displayError('Auto-Fix Failed', 'Unable to update info file', 'Please reinstall PiBakery to fix this issue.')
@@ -420,7 +437,7 @@ function checkForBlockUpdates () {
   * @return null
 */
 function checkForRaspbianUpdates (cb) {
-  fs.readFile(path.normalize(__dirname + '/../os/info.json'), 'utf8', function (error, data) {
+  fs.readFile(path.normalize(getOsPath() + 'info.json'), 'utf8', function (error, data) {
     if (error) {
       console.error(error)
       return
@@ -771,7 +788,7 @@ function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, ne
         alert('Unable to connect to server.\nTry updating later.')
       }
     }else {
-      var saveName = path.normalize(__dirname + '/../os/raspbian-pibakery.7z')
+      var saveName = path.normalize(getOsPath() + 'raspbian-pibakery.7z')
       var raspbianDownload = wget.download(src, saveName, {})
       raspbianDownload.on('error', function (error) {
         console.error(error)
@@ -799,7 +816,7 @@ function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, ne
               }
             }else {
               var extractProgress
-              extract7z(saveName, path.normalize(__dirname + '/../os/'), function (error) {
+              extract7z(saveName, path.normalize(getOsPath()), function (error) {
                 clearInterval(extractProgress)
                 if (error) {
                   console.error(error)
@@ -846,14 +863,14 @@ function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, ne
                             displayError('Raspbian Update Failed', 'Unable to remove 7z', 'This might cause unexpected behaviour whilst using PiBakery.')
                           }
                         }else {
-                          fs.remove(path.normalize(__dirname + '/../os/raspbian-pibakery.img'), function (error) // delete the old raspbian.img
+                          fs.remove(path.normalize(getOsPath() + 'raspbian-pibakery.img'), function (error) // delete the old raspbian.img
                           {
                             if (error && (! fixing)) // if we're fixing the .img won't exist, so ignore this error.
                             {
                               console.error(error)
                               displayError('Raspbian Update Failed', 'Removal Failed', 'This might cause unexpected behaviour whilst using PiBakery.')
                             }else {
-                              fs.rename(filepath, path.normalize(__dirname + '/../os/raspbian-pibakery.img'), function (error) // rename new-raspbian.img to raspbian.img
+                              fs.rename(filepath, path.normalize(getOsPath() + 'raspbian-pibakery.img'), function (error) // rename new-raspbian.img to raspbian.img
                               {
                                 if (error) {
                                   console.error(error)
@@ -863,7 +880,7 @@ function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, ne
                                     displayError('Raspbian Update Failed', 'Processing Failed', 'This might cause unexpected behaviour whilst using PiBakery.')
                                   }
                                 }else {
-                                  fs.writeFile(path.normalize(__dirname + '/../os/info.json'), newOsInfo, function (error) {
+                                  fs.writeFile(path.normalize(getOsPath() + 'info.json'), newOsInfo, function (error) {
                                     if (error) {
                                       console.error(error)
                                       if (fixing) {
@@ -953,8 +970,8 @@ function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, ne
 function getExtractedPath (callback, currentNumber) {
   if (typeof currentNumber === 'undefined') { currentNumber = 0; }
   var paths = [
-    path.normalize(__dirname + '/../os/raspbian-pibakery-new.img'),
-    path.normalize(__dirname + '/../raspbian-pibakery-new.img')
+    path.normalize(getOsPath() + 'raspbian-pibakery-new.img'),
+    path.normalize(getOsPath() + '../raspbian-pibakery-new.img')
   ]
   if (currentNumber >= paths.length) {
     callback(false)
@@ -1374,7 +1391,7 @@ function displayError (titleMsg, errorMsg, behaviourMsg) {
 */
 function writeToSd () {
   writeTryCount = 0
-  var imageFile = path.normalize(__dirname + '/../os/raspbian-pibakery.img')
+  var imageFile = path.normalize(getOsPath() + 'raspbian-pibakery.img')
 
   createSdChooser(function (devicePath, name) {
     var choice = dialog.showMessageBox(
@@ -1437,7 +1454,11 @@ function writeImageMac (imageFile, devicePath) {
   var osStream = fs.createReadStream(imageFile)
   osStream.length = fs.statSync(imageFile).size
 
-  var sdWrite = imageWrite.write(devicePath, osStream, {check: false})
+  var sdWrite = imageWrite.write(devicePath, osStream, {
+    check: false,
+    size: fs.statSync(imageFile).size
+  })
+
   sdWrite.on('progress', function (state) {
     document.getElementById('writeProgressbar').setAttribute('max', state.length)
     document.getElementById('writeProgressbar').setAttribute('value', state.transferred)
