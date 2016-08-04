@@ -1,7 +1,7 @@
 # PiBakery
 The blocks based, easy to use setup tool for Raspberry Pi
 
-![PiBakery demo screen](http://pibakery.org/test/img/blocks-on-workspace.png)
+![PiBakery demo screen](http://pibakery.org/img/blocks-on-workspace.png)
 
 PiBakery is a a blocks based drag and drop tool that allows you to customise and edit your Raspberry Pi without powering the Pi on. Simply insert your SD card into your computer, choose which features you want on your Pi, and hit **Write**. PiBakery will write the latest version of Raspbian to your SD card, with your customisations added too.
 
