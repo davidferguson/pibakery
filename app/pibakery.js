@@ -36,6 +36,8 @@
 
 'use strict'
 
+var extractProgress
+
 var drivelist = require('drivelist')
 var imageWrite = require('resin-image-write')
 var exec = require('child_process').exec
@@ -61,22 +63,21 @@ var validation = []
 var firstBoot = true
 var currentMode = 'write'
 var piBakeryPath
-var extractProgress
+var tempBlocks = []
 
 /**
-  * @desc defines the os folder location for Windows and Mac
-  * @return string - the location of the os folder
+  * @desc checks that the os and blocks exist, and sets up PiBakery
+  * @return null
 */
-function getOsPath() {
-  if( process.platform == 'darwin' ) {
+function getOsPath () {
+  if (process.platform == 'darwin') {
     // Mac stores the OS in Application Support
     return path.normalize('/Library/Application Support/PiBakery/os/')
   }
-  else if( process.platform == 'win32' ) {
+  else if (process.platform == 'win32') {
     // Windows stores the OS in install directory
     return path.normalize(__dirname + '/../os/')
-  }
-  else {
+  }else {
     return null
   }
 }
@@ -1172,10 +1173,19 @@ function updateSd () {
                                         if (error) {
                                           console.error(error)
                                         }
-                                        for ( var x = 0; x < script[3].length; x++) {
-                                          fs.copySync(path.normalize(__dirname + '/../pibakery-blocks/' + script[3][x]), path.normalize(piBakeryPath + 'blocks/' + script[3][x]))
-                                        }
-                                        alert('SD Card Updated')
+
+                                        copyBlocks(script[3], path.normalize(piBakeryPath + 'blocks/'), function (error) {
+                                          if (error) {
+                                            console.log('error copying blocks to SD', error)
+                                            alert('Error updating SD. Please try again.')
+                                            return
+                                          }
+                                          alert('SD Card Updated')
+                                        })
+                                      /*for ( var x = 0; x < script[3].length; x++) {
+                                        fs.copySync(path.normalize(__dirname + '/../pibakery-blocks/' + script[3][x]), path.normalize(piBakeryPath + 'blocks/' + script[3][x]))
+                                      }
+                                      alert('SD Card Updated')*/
                                       })
                                     }
                                   })
@@ -1193,6 +1203,40 @@ function updateSd () {
           })
         }
       })
+    }
+  })
+}
+
+/**
+  * @desc called by writeScripts and updateSd - copies the block folders to the
+  * SD card
+	* @param array blockArray - array of block names that need to be copied
+  * @param string piBakeryPath - mount path of the SD to copy to
+  * @param function callback - (error)
+  * @param number currentNumber - current block we're copying
+  * @return null
+*/
+function copyBlocks (blockArray, piBakeryPath, callback, currentNumber) {
+  if (typeof currentNumber === 'undefined') { currentNumber = 0; }
+
+  var blockFolder
+  blockFolder = path.normalize(__dirname + '/../pibakery-blocks/' + blockArray[currentNumber])
+
+  for ( var y = 0; y < tempBlocks.length; y++) {
+    if (tempBlocks[y][0] == blockArray[currentNumber]) {
+      blockFolder = tempBlocks[y][1]
+    }
+  }
+
+  fs.copy(blockFolder, path.normalize(piBakeryPath + blockArray[currentNumber]), function (error) {
+    if (error) {
+      callback(error)
+      return
+    }
+    if (currentNumber + 1 == blockArray.length) {
+      callback(false)
+    } else {
+      copyBlocks(blockArray, piBakeryPath, callback, currentNumber + 1)
     }
   })
 }
@@ -1621,32 +1665,39 @@ function writeScripts (mountpoint) {
                           console.error("Can't write blocks xml:", error)
                           displayError('SD Write Failed', "Can't write PiBakery scripts", 'Please try writing to the SD card again.')
                         }else {
-                          for ( var x = 0; x < script[3].length; x++) {
-                            fs.copySync(path.normalize(__dirname + '/../pibakery-blocks/' + script[3][x]), path.normalize(mountpoint + 'PiBakery/blocks/' + script[3][x]))
-                          }
-                          document.getElementById('writeProgressTitle').innerHTML = 'Write Successful'
-                          document.getElementById('writeAnimation').setAttribute('src', path.normalize(__dirname + '/img/success.png'))
-                          document.getElementById('writeProgressbar').parentNode.removeChild(document.getElementById('writeProgressbar'))
+                          copyBlocks(script[3], path.normalize(mountpoint + 'PiBakery/blocks/'), function (error) {
+                            if (error) {
+                              console.error("Can't copy blocks to SD", error)
+                              displayError('SD Write Failed', "Can't write PiBakery blocks", 'Please try writing to the SD card again.')
+                              return
+                            }
+                            document.getElementById('writeProgressTitle').innerHTML = 'Write Successful'
+                            document.getElementById('writeAnimation').setAttribute('src', path.normalize(__dirname + '/img/success.png'))
+                            document.getElementById('writeProgressbar').parentNode.removeChild(document.getElementById('writeProgressbar'))
 
-                          var closeBtnDiv = document.createElement('p')
-                          closeBtnDiv.setAttribute('id', 'closeBtnDiv')
+                            var closeBtnDiv = document.createElement('p')
+                            closeBtnDiv.setAttribute('id', 'closeBtnDiv')
 
-                          var closeBtn = document.createElement('button')
-                          closeBtn.setAttribute('id', 'closeBtn')
-                          closeBtn.innerHTML = 'Close'
-                          closeBtn.addEventListener('click', function () {
-                            document.getElementById('hider').parentNode.removeChild(document.getElementById('hider'))
-                            document.getElementById('writingMessage').parentNode.removeChild(document.getElementById('writingMessage'))
+                            var closeBtn = document.createElement('button')
+                            closeBtn.setAttribute('id', 'closeBtn')
+                            closeBtn.innerHTML = 'Close'
+                            closeBtn.addEventListener('click', function () {
+                              document.getElementById('hider').parentNode.removeChild(document.getElementById('hider'))
+                              document.getElementById('writingMessage').parentNode.removeChild(document.getElementById('writingMessage'))
+                            })
+                            closeBtnDiv.appendChild(closeBtn)
+
+                            document.getElementById('writingMessage').appendChild(closeBtnDiv)
+
+                            var hiderClear = function () {
+                              document.getElementById('hider').parentNode.removeChild(document.getElementById('hider'))
+                              document.getElementById('writingMessage').parentNode.removeChild(document.getElementById('writingMessage'))
+                            }
+                            document.getElementById('hider').addEventListener('click', hiderClear)
                           })
-                          closeBtnDiv.appendChild(closeBtn)
-
-                          document.getElementById('writingMessage').appendChild(closeBtnDiv)
-
-                          var hiderClear = function () {
-                            document.getElementById('hider').parentNode.removeChild(document.getElementById('hider'))
-                            document.getElementById('writingMessage').parentNode.removeChild(document.getElementById('writingMessage'))
-                          }
-                          document.getElementById('hider').addEventListener('click', hiderClear)
+                        /*for ( var x = 0; x < script[3].length; x++) {
+                          fs.copySync(path.normalize(__dirname + '/../pibakery-blocks/' + script[3][x]), path.normalize(mountpoint + 'PiBakery/blocks/' + script[3][x]))
+                        }*/
                         }
                       })
                     }
@@ -2042,11 +2093,11 @@ function importBlock (blockCode) {
       newArg.name = x + 1
       newArg.text = currentArg.default
       validation.push({
-				block: blockName,
-				field: x+1,
-				max: currentArg.maxLength,
-				type: currentArg.type
-			})
+        block: blockName,
+        field: x + 1,
+        max: currentArg.maxLength,
+        type: currentArg.type
+      })
     }
     else if (currentArg.type == 'menu') {
       newArg.type = 'field_dropdown'
@@ -2115,8 +2166,8 @@ function importBlock (blockCode) {
   * @return null
 */
 function validateField (block, value) {
-  for( var i = 0; i < block.inputList.length; i++ ) {
-    for( var j = 0; j < block.inputList[i].fieldRow.length; j++ ) {
+  for ( var i = 0; i < block.inputList.length; i++) {
+    for ( var j = 0; j < block.inputList[i].fieldRow.length; j++) {
       if (block.inputList[i].fieldRow[j].text_ == value) {
         for ( var k = 0; k < validation.length; k++) {
           if (validation[k].block == block.type && validation[k].field == block.inputList[i].fieldRow[j].name) {
@@ -2141,15 +2192,18 @@ function validateField (block, value) {
   * generate the xml file of the workspace so the user can save their script
   * @return null
 */
-function importRecipe () {
-  var openPath = path.normalize(dialog.showOpenDialog(
-    {
+function importRecipe (openPath) {
+  if (typeof openPath != 'string') {
+    openPath = dialog.showOpenDialog({
       title: 'Choose recipe file:',
       filters: [{ name: 'XML Files', extensions: ['xml'] }]
-    }))
+    })
+  }
 
   if (openPath) {
-    openPath = openPath[0]
+    if (typeof openPath != 'string') {
+      openPath = path.normalize(openPath[0])
+    }
 
     Blockly.mainWorkspace.clear()
     fs.readFile(openPath, 'utf8', function (error, data) {
@@ -2244,4 +2298,59 @@ function bashEscape (arg) {
       }
       return '\'"' + val + '"\''
     }) + "'"
+}
+
+// Used to support drag-and-drop files onto PiBakery. XML files will be opened
+// as PiBakery recipies, and folders will be imported as temporary blocks
+document.ondragover = document.ondrop = (ev) => {
+  ev.preventDefault()
+}
+document.ondragleave = document.ondrop = (ev) => {
+  ev.preventDefault()
+}
+document.body.ondrop = (ev) => {
+  ev.preventDefault()
+  var filepath = ev.dataTransfer.files[0].path
+  if (filepath.endsWith('.xml')) {
+    // import the xml file
+    importRecipe(filepath)
+  }else {
+    fs.stat(filepath, function (error, stats) {
+      if (stats.isDirectory()) {
+        var folderName = filepath.split('/').slice(-1)[0]
+        var jsonFile = path.normalize(filepath + '/' + folderName + '.json')
+        fs.stat(jsonFile, function (error, stats) {
+          if (! error) {
+            fs.stat(path.normalize(__dirname + '/../pibakery-blocks/' + folderName), function (error, stats) {
+              if (!error) {
+                var choice = dialog.showMessageBox(
+                  {
+                    type: 'question',
+                    buttons: ['Yes', 'No'],
+                    title: 'Block Conflict',
+                    message: 'The block you are trying to import conflicts with a block already imported into PiBakery. Do you want to overwrite the existing block?'
+                  })
+                if (choice == 1) {
+                  return
+                } else {
+                  fs.removeSync(path.normalize(__dirname + '/../pibakery-blocks/' + folderName))
+                }
+              }
+              tempBlocks.push([folderName, filepath])
+              fs.readFile(jsonFile, 'utf8', function (error, data) {
+                if (error) {
+                  console.error(error)
+                  alert("Error loading block '" + folderName + "'.")
+                }else {
+                  importBlock(data)
+                  workspace.updateToolbox(document.getElementById('toolbox'))
+                  alert("Imported Block. '" + folderName + "' will be available to use until you next restart PiBakery.")
+                }
+              })
+            })
+          }
+        })
+      }
+    })
+  }
 }
