@@ -621,13 +621,13 @@ function updateBlocks (src, downloadHash, newBlocksInfo, fixing) {
                                     closeBtnDiv.appendChild(closeBtn)
                                     writeDiv.appendChild(closeBtnDiv)
                                   }else {
-                                    var blockTypes = ['software', 'network', 'setting', 'other']
+                                    /*var blockTypes = ['software', 'network', 'setting', 'other']
                                     for ( var i = 0; i < blockTypes.length; i++) {
                                       var myNode = document.getElementById(blockTypes[i])
                                       while (myNode.firstChild){
                                         myNode.removeChild(myNode.firstChild)
                                       }
-                                    }
+                                    }*/
 
                                     loadBlocks()
                                     title.innerHTML = 'Update Successful'
@@ -2027,24 +2027,78 @@ function createSdChooser (callback) {
 */
 function loadBlocks () {
   fs.readFile(path.normalize(__dirname + '/../pibakery-blocks/info.json'), 'utf8', function (error, blockInfo) {
-    if (error) {
-      console.error(error)
-      alert('Not able to load blocks.\nIf this error persists, please reinstall PiBakery.')
-    }else {
-      var blocks = JSON.parse(blockInfo).loadOrder
-      for ( var x = 0; x < blocks.length; x++) {
-        var blockName = blocks[x]
-        var jsonPath = path.normalize(__dirname + '/../pibakery-blocks/' + blockName + '/' + blockName + '.json')
-        fs.readFile(jsonPath, 'utf8', function (error, data) {
+    fs.stat(path.normalize(__dirname + '/../pibakery-blocks/categories.json'), function (error) {
+      if (error) {
+        // old block loader, load in the old way
+        if (error) {
+          console.error(error)
+          alert('Not able to load blocks.\nIf this error persists, please reinstall PiBakery.')
+        }else {
+          var blocks = JSON.parse(blockInfo).loadOrder
+          for ( var x = 0; x < blocks.length; x++) {
+            var blockName = blocks[x]
+            var jsonPath = path.normalize(__dirname + '/../pibakery-blocks/' + blockName + '/' + blockName + '.json')
+            fs.readFile(jsonPath, 'utf8', function (error, data) {
+              if (error) {
+                console.error(error)
+                alert("Error loading block '" + blockName + "'.\nIf this error persists, please reinstall PiBakery.")
+              }else {
+                importBlock(data)
+              }
+            })
+          }
+        }
+      }else {
+        // new block loader - updatable categories
+        fs.readFile(path.normalize(__dirname + '/../pibakery-blocks/categories.json'), 'utf8', function (error, categoryInfo) {
+          // if we can use custom categories
           if (error) {
             console.error(error)
-            alert("Error loading block '" + blockName + "'.\nIf this error persists, please reinstall PiBakery.")
+            alert('Not able to load blocks.\nIf this error persists, please reinstall PiBakery.')
           }else {
-            importBlock(data)
+            var categories = JSON.parse(categoryInfo).categories
+            var blocks = JSON.parse(blockInfo).loadOrder
+
+            // delete the default categories
+            var currentCategories = document.getElementById('toolbox').children
+            for ( var x = currentCategories.length - 1; x != 0; x--) {
+              console.log(currentCategories[x].id)
+              if (currentCategories[x].id != 'hat') {
+                currentCategories[x].parentNode.removeChild(currentCategories[x])
+              }
+            }
+
+            var categoryTypeText = ['hat']
+            var categoryTypeColour = [20]
+
+            // add the custom categories
+            for ( var x = 0; x < categories.length; x++) {
+              categoryTypeText.push(categories[x].name)
+              categoryTypeColour.push(categories[x].colour)
+              var newCategory = document.createElement('category')
+              newCategory.setAttribute('name', categories[x].display)
+              newCategory.setAttribute('colour', categories[x].colour)
+              newCategory.setAttribute('id', categories[x].name)
+              document.getElementById('toolbox').appendChild(newCategory)
+            }
+
+            // add the blocks as normal
+            for ( var x = 0; x < blocks.length; x++) {
+              var blockName = blocks[x]
+              var jsonPath = path.normalize(__dirname + '/../pibakery-blocks/' + blockName + '/' + blockName + '.json')
+              fs.readFile(jsonPath, 'utf8', function (error, data) {
+                if (error) {
+                  console.error(error)
+                  alert("Error loading block '" + blockName + "'.\nIf this error persists, please reinstall PiBakery.")
+                }else {
+                  importBlock(data, categoryTypeText, categoryTypeColour)
+                }
+              })
+            }
           }
         })
       }
-    }
+    })
   })
 }
 
@@ -2054,15 +2108,21 @@ function loadBlocks () {
 	* @param string blockCode - the JSON data of the block being imported
   * @return null
 */
-function importBlock (blockCode) {
-  var typeText = ['hat', 'software', 'network', 'setting', 'other']
-  var typeColour = [20, 120, 260, 210, 290]
+function importBlock (blockCode, typeText, typeColour) {
+  if (typeof typeText === 'undefined') { typeText = ['hat', 'software', 'network', 'setting', 'other']; }
+  if (typeof typeColour === 'undefined') { typeColour = [20, 120, 260, 210, 290]; }
+  // var typeText = ['hat', 'software', 'network', 'setting', 'other']
+  // var typeColour = [20, 120, 260, 210, 290]
 
   var blockDef
   var scriptDef
 
   // var blockJSON = JSON.parse(JSONescape(blockCode))
   var blockJSON = JSON.parse(blockCode)
+
+  if (typeText.indexOf(blockJSON.category) != -1) {
+    blockJSON.type = blockJSON.category
+  }
 
   var blockName = blockJSON.name
   var blockText = blockJSON.text
