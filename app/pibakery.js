@@ -2030,23 +2030,18 @@ function loadBlocks () {
     fs.stat(path.normalize(__dirname + '/../pibakery-blocks/categories.json'), function (error) {
       if (error) {
         // old block loader, load in the old way
-        if (error) {
-          console.error(error)
-          alert('Not able to load blocks.\nIf this error persists, please reinstall PiBakery.')
-        }else {
-          var blocks = JSON.parse(blockInfo).loadOrder
-          for ( var x = 0; x < blocks.length; x++) {
-            var blockName = blocks[x]
-            var jsonPath = path.normalize(__dirname + '/../pibakery-blocks/' + blockName + '/' + blockName + '.json')
-            fs.readFile(jsonPath, 'utf8', function (error, data) {
-              if (error) {
-                console.error(error)
-                alert("Error loading block '" + blockName + "'.\nIf this error persists, please reinstall PiBakery.")
-              }else {
-                importBlock(data)
-              }
-            })
-          }
+        var blocks = JSON.parse(blockInfo).loadOrder
+        for ( var x = 0; x < blocks.length; x++) {
+          var blockName = blocks[x]
+          var jsonPath = path.normalize(__dirname + '/../pibakery-blocks/' + blockName + '/' + blockName + '.json')
+          fs.readFile(jsonPath, 'utf8', function (error, data) {
+            if (error) {
+              console.error(error)
+              alert("Error loading block '" + blockName + "'.\nIf this error persists, please reinstall PiBakery.")
+            }else {
+              importBlock(data)
+            }
+          })
         }
       }else {
         // new block loader - updatable categories
