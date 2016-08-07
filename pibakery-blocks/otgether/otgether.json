@@ -1,0 +1,18 @@
+{
+	"name": "otgether",
+	"text": "Set Pi Zero OTG Mode to Ethernet\\nWith Static IP: %1",
+	"script": "otgEther.sh",
+	"args": [
+		{
+			"type": "text",
+			"default": "169.254.64.64",
+			"maxLength":16
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "network",
+	"category":"otg",
+	"shortDescription":"Set the Pi Zero to use Ethernet over OTG, with a static IP address.",
+	"longDescription":"The Raspberry Pi Zero has the ability to support OTG gadget mode over it's DATA usb port. This block enables the Ethernet gadget, allowing your Raspberry Pi to be networked to a computer over USB. You need to specify an IP address for your Raspberr Pi, so that you'll be able to connect to it."
+}

@@ -1,7 +1,7 @@
 {
-  "version": 1.0,
-  "compressedMD5": "ccd8a4084986dbbceda36a423d829702",
-  "downloadUrl": "https://github.com/davidferguson/pibakery-blocks/releases/download/v0.1.0/pibakery-blocks.zip",
+  "version": 2.0,
+  "compressedMD5": "9c741092e80e07a01ac8c32a5ecbfc79",
+  "downloadUrl": "https://github.com/davidferguson/pibakery-blocks/releases/download/v0.2.0/pibakery-blocks.zip",
   "loadOrder": [
     "packageinstall",
     "lampinstall",
@@ -9,6 +9,11 @@
     "vncstart",
     "wifisetup",
     "downloadfile",
+    "otgether",
+    "otgmidi",
+    "otgserial",
+    "otgmassstorage",
+    "otgremove",
     "bootbehaviour",
     "changepass",
     "sethostname",

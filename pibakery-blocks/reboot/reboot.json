@@ -6,6 +6,7 @@
 	"network": false,
 	"continue": false,
 	"type": "other",
+	"category":"other",
 	"shortDescription":"Reboots your Raspberry Pi",
 	"longDescription":"Exactly what it says on the block, this will reboot your Raspberry Pi."
 }

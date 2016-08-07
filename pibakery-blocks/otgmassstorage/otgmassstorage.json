@@ -1,0 +1,12 @@
+{
+	"name": "otgmassstorage",
+	"text": "Set Pi Zero OTG Mode to Mass Storage",
+	"script": "otgMassStorage.sh",
+	"args": [],
+	"network": false,
+	"continue": true,
+	"type": "setting",
+	"category":"otg",
+	"shortDescription":"Set the Pi Zero to use Mass Storage over OTG.",
+	"longDescription":"The Raspberry Pi Zero has the ability to support OTG gadget mode over it's DATA usb port. This block enables the Mass Storage gadget, allowing your Raspberry Pi to appear as a USB flash drive to a connected computer. The files dropped onto this drive will be saved in the BIN file '/opt/otgmassstorage/filesystem.bin' allowing you to mount it, and retrieve the files you stored on it."
+}

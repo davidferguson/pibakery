@@ -1,0 +1,12 @@
+{
+	"name": "otgremove",
+	"text": "Disable Pi Zero OTG",
+	"script": "otgRemove.sh",
+	"args": [],
+	"network": false,
+	"continue": true,
+	"type": "setting",
+	"category":"otg",
+	"shortDescription":"Disable the OTG mode on the Raspberry Pi Zero.",
+	"longDescription":"The Raspberry Pi Zero has the ability to support OTG gadget mode over it's DATA usb port. If you've enabled this feature using one of the OTG blocks, you can use this block to return the Pi Zero back to it's default behaviour of not having any gadget enabled."
+}

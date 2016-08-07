@@ -1,0 +1,29 @@
+{
+  "categories": [
+    {
+      "name": "software",
+      "display": "Programs",
+      "colour": "120"
+    },
+    {
+      "name": "network",
+      "display": "Network",
+      "colour": "260"
+    },
+    {
+      "name": "setting",
+      "display": "Settings",
+      "colour": "210"
+    },
+    {
+      "name": "otg",
+      "display": "Pi Zero OTG",
+      "colour": "80"
+    },
+    {
+      "name": "other",
+      "display": "Other",
+      "colour": "290"
+    }
+  ]
+}
