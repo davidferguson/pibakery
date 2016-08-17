@@ -1176,7 +1176,7 @@ function updateSd () {
 
                                         copyBlocks(script[3], path.normalize(piBakeryPath + 'blocks/'), function (error) {
                                           if (error) {
-                                            console.log('error copying blocks to SD', error)
+                                            console.error('error copying blocks to SD', error)
                                             alert('Error updating SD. Please try again.')
                                             return
                                           }
@@ -1217,7 +1217,14 @@ function updateSd () {
   * @return null
 */
 function copyBlocks (blockArray, piBakeryPath, callback, currentNumber) {
-  if (typeof currentNumber === 'undefined') { currentNumber = 0; }
+  if (typeof currentNumber === 'undefined') {
+    currentNumber = 0
+  }
+
+  if (typeof blockArray == 'undefined' || blockArray.length == 0) {
+    callback(false)
+    return
+  }
 
   var blockFolder
   blockFolder = path.normalize(__dirname + '/../pibakery-blocks/' + blockArray[currentNumber])
@@ -2057,7 +2064,6 @@ function loadBlocks () {
             // delete the default categories
             var currentCategories = document.getElementById('toolbox').children
             for ( var x = currentCategories.length - 1; x != 0; x--) {
-              console.log(currentCategories[x].id)
               if (currentCategories[x].id != 'hat') {
                 currentCategories[x].parentNode.removeChild(currentCategories[x])
               }
