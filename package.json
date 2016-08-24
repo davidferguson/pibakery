@@ -1,15 +1,15 @@
 {
   "name": "PiBakery",
   "displayName": "PiBakery",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "The blocks based, easy to use setup tool for Raspberry Pi",
   "main": "./main.js",
   "author": "David Ferguson <david@pibakery.org>",
   "license": "GPL-3.0+",
   "scripts": {
     "start": "electron .",
-    "build-mac": "find . -name .DS_Store -depth -exec rm {} \\; && npm dedupe && electron-packager ./ PiBakery --platform=darwin --arch=all --version=1.3.2 --overwrite --prune --app-version=0.2.1 --icon=./app/img/icon.icns",
-    "build-win": "npm dedupe && electron-packager ./ PiBakery --platform=win32 --arch=ia32 --version=1.3.2 --overwrite --prune --app-version=0.2.1 --icon=./app/img/icon.ico"
+    "build-mac": "find . -name .DS_Store -depth -exec rm {} \\; && npm dedupe && electron-packager ./ PiBakery --platform=darwin --arch=all --version=1.3.2 --overwrite --prune --app-version=0.2.2 --icon=./app/img/icon.icns",
+    "build-win": "npm dedupe && electron-packager ./ PiBakery --platform=win32 --arch=ia32 --version=1.3.2 --overwrite --prune --app-version=0.2.2 --icon=./app/img/icon.ico"
   },
   "optionalDependencies": {
     "elevator": "^1.0.0",
