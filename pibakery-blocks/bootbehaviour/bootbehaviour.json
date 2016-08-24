@@ -1,6 +1,6 @@
 {
 	"name": "bootbehaviour",
-	"text": "Set Boot Option to %1",
+	"text": "Set Boot Option to %1\\nRequires restart to take effect",
 	"script": "bootbehaviour.sh",
 	"args": [
 		{

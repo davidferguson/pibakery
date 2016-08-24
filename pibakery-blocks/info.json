@@ -1,7 +1,7 @@
 {
-  "version": 2.0,
-  "compressedMD5": "9c741092e80e07a01ac8c32a5ecbfc79",
-  "downloadUrl": "https://github.com/davidferguson/pibakery-blocks/releases/download/v0.2.0/pibakery-blocks.zip",
+  "version": 2.1,
+  "compressedMD5": "18f668ecc5276231e7aeb958c2f843a1",
+  "downloadUrl": "https://github.com/davidferguson/pibakery-blocks/releases/download/v0.2.1/pibakery-blocks.zip",
   "loadOrder": [
     "packageinstall",
     "lampinstall",

@@ -1,6 +1,6 @@
 {
 	"name": "lampinstall",
-	"text": "Install Apache/PHP/MySQL",
+	"text": "Install Apache/PHP/MySQL\\nRequires internet connection",
 	"script": "lampInstall.sh",
 	"args": [],
 	"network": true,

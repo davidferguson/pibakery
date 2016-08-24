@@ -1,6 +1,6 @@
 {
 	"name": "packageinstall",
-	"text": "Install Package: %1",
+	"text": "Install Package: %1\\nRequires internet connection",
 	"script": "packageInstall.sh",
 	"args": [
 		{

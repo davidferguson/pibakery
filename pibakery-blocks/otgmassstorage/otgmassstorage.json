@@ -1,6 +1,6 @@
 {
 	"name": "otgmassstorage",
-	"text": "Set Pi Zero OTG Mode to Mass Storage",
+	"text": "Set Pi Zero OTG Mode to Mass Storage\\nRequires restart to take effect",
 	"script": "otgMassStorage.sh",
 	"args": [],
 	"network": false,

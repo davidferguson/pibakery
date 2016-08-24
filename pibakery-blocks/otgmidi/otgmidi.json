@@ -1,6 +1,6 @@
 {
 	"name": "otgmidi",
-	"text": "Set Pi Zero OTG Mode to MIDI",
+	"text": "Set Pi Zero OTG Mode to MIDI\\nRequires restart to take effect",
 	"script": "otgMidi.sh",
 	"args": [],
 	"network": false,

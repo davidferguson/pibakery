@@ -1,6 +1,6 @@
 {
 	"name": "otgremove",
-	"text": "Disable Pi Zero OTG",
+	"text": "Disable Pi Zero OTG\\nRequires restart to take effect",
 	"script": "otgRemove.sh",
 	"args": [],
 	"network": false,

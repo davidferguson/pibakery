@@ -1,6 +1,6 @@
 {
 	"name": "otgether",
-	"text": "Set Pi Zero OTG Mode to Ethernet\\nWith Static IP: %1",
+	"text": "Set Pi Zero OTG Mode to Ethernet\\nWith Static IP: %1\\nRequires restart to take effect",
 	"script": "otgEther.sh",
 	"args": [
 		{

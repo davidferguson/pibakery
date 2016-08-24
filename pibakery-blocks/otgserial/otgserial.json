@@ -1,6 +1,6 @@
 {
 	"name": "otgserial",
-	"text": "Set Pi Zero OTG Mode to Serial",
+	"text": "Set Pi Zero OTG Mode to Serial\\nRequires restart to take effect",
 	"script": "otgSerial.sh",
 	"args": [],
 	"network": false,
