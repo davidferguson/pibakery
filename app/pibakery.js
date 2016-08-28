@@ -2296,11 +2296,6 @@ function importRecipe (openPath) {
 
       workspace.updateToolbox(document.getElementById('toolbox'))
       Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(data), workspace)
-      document.getElementById('flashSD').removeEventListener('click', writeToSd)
-      document.getElementById('flashSD').addEventListener('click', updateSd)
-      document.getElementById('flashSD').children[1].innerText = 'Update'
-      document.getElementById('sdImage').src = 'img/update-sd.png'
-      currentMode = 'update'
     })
   }
 }
@@ -2362,7 +2357,7 @@ function bashEscape (arg) {
 }
 
 // Used to support drag-and-drop files onto PiBakery. XML files will be opened
-// as PiBakery recipies, and folders will be imported as temporary blocks
+// as PiBakery recipes, and folders will be imported as temporary blocks
 document.ondragover = document.ondrop = (ev) => {
   ev.preventDefault()
 }
