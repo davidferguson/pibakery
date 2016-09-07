@@ -2383,11 +2383,11 @@ document.body.ondrop = (ev) => {
         fs.stat(jsonFile, function (error, stats) {
           if (! error) {
             if (process.platform == 'win32') {
-              var BlocksFolder = '\\..\\pibakery-blocks\\'
+              var blocksFolder = '\\..\\pibakery-blocks\\'
             }else{
-              var BlocksFolder = '/../pibakery-blocks/'
+              var blocksFolder = '/../pibakery-blocks/'
             }
-            fs.stat(path.normalize(__dirname + BlocksFolder + folderName), function (error, stats) {
+            fs.stat(path.normalize(__dirname + blocksFolder + folderName), function (error, stats) {
               if (!error) {
                 var choice = dialog.showMessageBox(
                   {
@@ -2399,7 +2399,7 @@ document.body.ondrop = (ev) => {
                 if (choice == 1) {
                   return
                 } else {
-                  fs.removeSync(path.normalize(__dirname + BlocksFolder + folderName))
+                  fs.removeSync(path.normalize(__dirname + blocksFolder + folderName))
                 }
               }
               tempBlocks.push([folderName, filepath])
