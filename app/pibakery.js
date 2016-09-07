@@ -137,6 +137,9 @@ function initialise () {
         ipcRenderer.on('paste', function (event, clipboard) {
           document.getElementsByClassName('blocklyHtmlInput')[0].value = clipboard
         })
+        ipcRenderer.on('testBlock', function (event) {
+          importTestBlock(dialog.showOpenDialog({properties: ['openDirectory']})[0])
+        })
       })
     })
   })
@@ -2371,52 +2374,57 @@ document.body.ondrop = (ev) => {
     // import the xml file
     importRecipe(filepath)
   }else {
-    fs.stat(filepath, function (error, stats) {
-      if (stats.isDirectory()) {
-        if (process.platform == 'win32') {
-          var folderName = filepath.split('\\').slice(-1)[0]
-          var jsonFile = path.normalize(filepath + '\\' + folderName + '.json')
-        }else{
-          var folderName = filepath.split('/').slice(-1)[0]
-          var jsonFile = path.normalize(filepath + '/' + folderName + '.json')
-        }
-        fs.stat(jsonFile, function (error, stats) {
-          if (! error) {
-            if (process.platform == 'win32') {
-              var blocksFolder = '\\..\\pibakery-blocks\\'
-            }else{
-              var blocksFolder = '/../pibakery-blocks/'
-            }
-            fs.stat(path.normalize(__dirname + blocksFolder + folderName), function (error, stats) {
-              if (!error) {
-                var choice = dialog.showMessageBox(
-                  {
-                    type: 'question',
-                    buttons: ['Yes', 'No'],
-                    title: 'Block Conflict',
-                    message: 'The block you are trying to import conflicts with a block already imported into PiBakery. Do you want to overwrite the existing block?'
-                  })
-                if (choice == 1) {
-                  return
-                } else {
-                  fs.removeSync(path.normalize(__dirname + blocksFolder + folderName))
-                }
-              }
-              tempBlocks.push([folderName, filepath])
-              fs.readFile(jsonFile, 'utf8', function (error, data) {
-                if (error) {
-                  console.error(error)
-                  alert("Error loading block '" + folderName + "'.")
-                }else {
-                  importBlock(data)
-                  workspace.updateToolbox(document.getElementById('toolbox'))
-                  alert("Imported Block. '" + folderName + "' will be available to use until you next restart PiBakery.")
-                }
-              })
-            })
-          }
-        })
-      }
-    })
+    importTestBlock(filepath)
   }
+}
+
+
+function importTestBlock(filepath) {
+  fs.stat(filepath, function (error, stats) {
+    if (stats.isDirectory()) {
+      if (process.platform == 'win32') {
+        var folderName = filepath.split('\\').slice(-1)[0]
+        var jsonFile = path.normalize(filepath + '\\' + folderName + '.json')
+      }else{
+        var folderName = filepath.split('/').slice(-1)[0]
+        var jsonFile = path.normalize(filepath + '/' + folderName + '.json')
+      }
+      fs.stat(jsonFile, function (error, stats) {
+        if (! error) {
+          if (process.platform == 'win32') {
+            var blocksFolder = '\\..\\pibakery-blocks\\'
+          }else{
+            var blocksFolder = '/../pibakery-blocks/'
+          }
+          fs.stat(path.normalize(__dirname + blocksFolder + folderName), function (error, stats) {
+            if (!error) {
+              var choice = dialog.showMessageBox(
+                {
+                  type: 'question',
+                  buttons: ['Yes', 'No'],
+                  title: 'Block Conflict',
+                  message: 'The block you are trying to import conflicts with a block already imported into PiBakery. Do you want to overwrite the existing block?'
+                })
+              if (choice == 1) {
+                return
+              } else {
+                fs.removeSync(path.normalize(__dirname + blocksFolder + folderName))
+              }
+            }
+            tempBlocks.push([folderName, filepath])
+            fs.readFile(jsonFile, 'utf8', function (error, data) {
+              if (error) {
+                console.error(error)
+                alert("Error loading block '" + folderName + "'.")
+              }else {
+                importBlock(data)
+                workspace.updateToolbox(document.getElementById('toolbox'))
+                alert("Imported Block. '" + folderName + "' will be available to use until you next restart PiBakery.")
+              }
+            })
+          })
+        }
+      })
+    }
+  })
 }
