@@ -2373,11 +2373,21 @@ document.body.ondrop = (ev) => {
   }else {
     fs.stat(filepath, function (error, stats) {
       if (stats.isDirectory()) {
-        var folderName = filepath.split('/').slice(-1)[0]
-        var jsonFile = path.normalize(filepath + '/' + folderName + '.json')
+        if (process.platform == 'win32') {
+          var folderName = filepath.split('\\').slice(-1)[0]
+          var jsonFile = path.normalize(filepath + '\\' + folderName + '.json')
+        }else{
+          var folderName = filepath.split('/').slice(-1)[0]
+          var jsonFile = path.normalize(filepath + '/' + folderName + '.json')
+        }
         fs.stat(jsonFile, function (error, stats) {
           if (! error) {
-            fs.stat(path.normalize(__dirname + '/../pibakery-blocks/' + folderName), function (error, stats) {
+            if (process.platform == 'win32') {
+              var BlocksFolder = '\\..\\pibakery-blocks\\'
+            }else{
+              var BlocksFolder = '/../pibakery-blocks/'
+            }
+            fs.stat(path.normalize(__dirname + BlocksFolder + folderName), function (error, stats) {
               if (!error) {
                 var choice = dialog.showMessageBox(
                   {
@@ -2389,7 +2399,7 @@ document.body.ondrop = (ev) => {
                 if (choice == 1) {
                   return
                 } else {
-                  fs.removeSync(path.normalize(__dirname + '/../pibakery-blocks/' + folderName))
+                  fs.removeSync(path.normalize(__dirname + BlocksFolder + folderName))
                 }
               }
               tempBlocks.push([folderName, filepath])
