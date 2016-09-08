@@ -36,7 +36,8 @@ exports.require = function(app, callback) {
 
     if (!elevated) {
 
-      if (platform === 'darwin') {
+      // would like to use ['darwin','freebsd','linux'].includes(platform) unsure if node supports yet
+      if ((platform === 'darwin') || (platform === 'freebsd') || (platform === 'linux')) {
 
         // Keep parent process hidden
         app.dock.hide();
