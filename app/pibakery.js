@@ -70,11 +70,12 @@ var tempBlocks = []
   * @return null
 */
 function getOsPath () {
-  if (process.platform == 'darwin') {
+  var platform = process.platform;
+  if ((platform == 'darwin') || (platform == 'linux') || (platform == 'freebsd')) {
     // Mac stores the OS in Application Support
     return path.normalize('/Library/Application Support/PiBakery/os/')
   }
-  else if (process.platform == 'win32') {
+  else if (platform == 'win32') {
     // Windows stores the OS in install directory
     return path.normalize(__dirname + '/../os/')
   }else {
