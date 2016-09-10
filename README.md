@@ -32,4 +32,4 @@ You can then run PiBakery using
 </br>
 `npm start`
 
-When PiBakery is run for the first time, it will give an error about not being able to find Raspbian. This is because Raspbian is the entire Raspberry Pi OS, and is too large to fit in the GitHub repository. By clicking `Attemp Auto-Fix` PiBakery will download Raspbian for you into the `os` directory. Once this download has completed, you're ready to start using PiBakery.
+When PiBakery is run for the first time, it will give an error about not being able to find Raspbian. This is because Raspbian is the entire Raspberry Pi OS, and is too large to fit in the GitHub repository. By clicking `Attempt Auto-Fix` PiBakery will download Raspbian for you into the `os` directory. Once this download has completed, you're ready to start using PiBakery.
