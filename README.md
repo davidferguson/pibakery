@@ -1,4 +1,8 @@
 # PiBakery
+===============
+[![Dependency Status](https://img.shields.io/david/davidferguson/pibakery.svg)](https://david-dm.org/davidferguson/pibakery)
+[![devDependency Status](https://img.shields.io/david/dev/davidferguson/pibakery.svg?maxAge=2592000)]()
+
 The blocks based, easy to use setup tool for Raspberry Pi
 
 ![PiBakery demo screen](http://pibakery.org/img/blocks-on-workspace.png)
