@@ -54,7 +54,7 @@ electron.app.on('ready', function()
 		var mainWindow = new electron.BrowserWindow({
 			height: 480,
 			width: 640,
-			resizable: false,
+			resizable: true,
 			'autoHideMenuBar': true,
 			title: "PiBakery",
 			icon: 'app/img/icon.png'
