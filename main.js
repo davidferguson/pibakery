@@ -54,7 +54,9 @@ electron.app.on('ready', function()
 		var mainWindow = new electron.BrowserWindow({
 			height: 480,
 			width: 640,
-			resizable: false,
+			minHeight: 480,
+			minWidth: 640,
+			resizable: true,
 			'autoHideMenuBar': true,
 			title: "PiBakery",
 			icon: 'app/img/icon.png'
@@ -74,10 +76,6 @@ electron.app.on('ready', function()
     electronLocalshortcut.register(mainWindow, 'CommandOrControl+V', function()
     {
       mainWindow.webContents.send('paste', electron.clipboard.readText());
-    });
-    electronLocalshortcut.register(mainWindow, 'CommandOrControl+Shift+Plus', function()
-    {
-      mainWindow.webContents.send('testBlock');
     });
 	});
 });
