@@ -74,7 +74,7 @@ function getOsPath () {
     // Mac stores the OS in Application Support
     return path.normalize('/Library/Application Support/PiBakery/os/')
   }
-  else if (process.platform == 'win32') {
+  else if (process.platform == 'win32' || process.platform == 'linux') {
     // Windows stores the OS in install directory
     return path.normalize(__dirname + '/../os/')
   }else {
@@ -725,6 +725,9 @@ function extract7z (archive, outputdir, callback) {
   else if (process.platform == 'win32') {
     var binary = '"' + path.normalize(__dirname + '/../7z.exe') + '"'
   }
+  else if (process.platform == 'linux') {
+    var binary = '7za'
+  }
   exec(binary + ' x -o"' + outputdir + '" "' + archive + '"', function (error, stdout, stderr) {
     callback(error)
   })
@@ -1044,8 +1047,8 @@ scanner.on('remove', function (drives) {
 */
 function importExisting (drives) {
   if ((drives.device) && (! drives.system) && (currentMode == 'write') && (Blockly.PiBakery.workspaceToCode(workspace) == '') && (! document.getElementById('hider')) && (drives.description != 'SuperDrive')) {
-    getMountPoint(drives.device, function (darwinMnt) {
-      if (process.platform == 'darwin') {
+    getMountPoint(drives.device, drives.mountpoint, 0, function (darwinMnt, __i) {
+      if (process.platform == 'darwin' || process.platform == 'linux') {
         piBakeryPath = path.normalize(darwinMnt + '/PiBakery/')
       }
       else if (process.platform == 'win32') {
@@ -1522,12 +1525,43 @@ function writeImageMac (imageFile, devicePath) {
     displayError('SD Write Failed', (error.code + ': not able to write image\n' + error.errno), 'Please try writing to the SD card again.')
   })
   sdWrite.on('done', function (success) {
+    if (process.platform == 'linux') {
+      var deviceName = devicePath.substr(devicePath.indexOf('/', 1) + 1)
+
+      execSync('mkdir -p /tmp/PiBakery/', {stdio: [null, null, null]}).toString()
+      execSync('kpartx -a -s ' + devicePath, {stdio: [null, null, null]}).toString()
+
+      // check to see if we can mount it
+      var count = 0
+      var mountCheck = setInterval(function () {
+        count++
+
+        if (count > 60) {
+          clearInterval(mountCheck)
+          displayError('SD Write Failed', "Can't find SD", 'Please try writing to the SD card again.')
+          return
+        }
+
+        exec('mount /dev/mapper/' + deviceName + '1 /tmp/PiBakery', function (error, stdout, stderr) {
+          if (error && count > 60) {
+            console.error("Can't find SD card:", error)
+            clearInterval(mountCheck)
+            displayError('SD Write Failed', "Can't find SD", 'Please try writing to the SD card again.')
+          }else {
+            clearInterval(mountCheck)
+            writeScripts(path.normalize('/tmp/PiBakery/'), deviceName)
+          }
+        })
+      }, 2000)
+      return
+    }
+
     // check to see if it's mounted again
     var count = 0
     var mountCheck = setInterval(function () {
       count++
 
-      getMountPoint(devicePath, function (darwinMnt) {
+      getMountPoint(devicePath, '', 0, function (darwinMnt, __) {
         if (! darwinMnt) {
           if (count > 60) {
             clearInterval(mountCheck)
@@ -1549,7 +1583,7 @@ function writeImageMac (imageFile, devicePath) {
             }
           }else {
             clearInterval(mountCheck)
-            writeScripts(mountpoint)
+            writeScripts(mountpoint, '')
           }
         })
       })
@@ -1616,7 +1650,7 @@ function writeImageWin (imageFile, devicePath, letter) {
             }
           }else {
             clearInterval(mountCheck)
-            writeScripts(mountpoint)
+            writeScripts(mountpoint, '')
           }
         })
       }, 1000)
@@ -1636,7 +1670,7 @@ function writeImageWin (imageFile, devicePath, letter) {
   * @param string mountpoint - the current mount point of the newly mounted SD
   * @return null
 */
-function writeScripts (mountpoint) {
+function writeScripts (mountpoint, linuxDevice) {
   var script = generateScript()
 
   fs.mkdir(path.normalize(mountpoint + 'PiBakery'), '0744', function (error) {
@@ -1681,6 +1715,8 @@ function writeScripts (mountpoint) {
                               displayError('SD Write Failed', "Can't write PiBakery blocks", 'Please try writing to the SD card again.')
                               return
                             }
+                            unmountLinuxDrive(linuxDevice)
+
                             document.getElementById('writeProgressTitle').innerHTML = 'Write Successful'
                             document.getElementById('writeAnimation').setAttribute('src', path.normalize(__dirname + '/img/success.png'))
                             document.getElementById('writeProgressbar').parentNode.removeChild(document.getElementById('writeProgressbar'))
@@ -1720,6 +1756,19 @@ function writeScripts (mountpoint) {
       })
     }
   })
+}
+
+/**
+  * @desc called by writeScripts, unmounts and removes the PiBakery loopback
+	* devices that are created on linux in order to write the PiBakery scripts
+  * @param string deviceName - the name of the device, eg 'sdb' or 'sdc'
+  * @return null
+*/
+function unmountLinuxDrive (deviceName) {
+  if (process.platform == 'linux') {
+    execSync('umount /tmp/PiBakery/', {stdio: [null, null, null]})
+    execSync('kpartx -d /dev/' + deviceName, {stdio: [null, null, null]})
+  }
 }
 
 /**
@@ -1803,7 +1852,7 @@ function writeImage (imageFile, devicePath, letter) {
   if (process.platform == 'win32') {
     writeImageWin(imageFile, devicePath, letter)
   }
-  else if (process.platform == 'darwin') {
+  else if (process.platform == 'darwin' || process.platform == 'linux') {
     writeImageMac(imageFile, devicePath)
   }
 }
@@ -1817,8 +1866,8 @@ function getDriveList (callback) {
   if (process.platform == 'win32') {
     getDriveListWin(callback)
   }
-  else if (process.platform == 'darwin') {
-    getDriveListMac(callback)
+  else if (process.platform == 'darwin' || process.platform == 'linux') {
+    getDriveListNix(callback)
   }
 }
 
@@ -1857,11 +1906,11 @@ function getDriveListWin (callback) {
 
 /**
   * @desc called by getDriveList, gets the list of drives suitable for using
-	* with PiBakery on a apple machine
+	* with PiBakery on a Mac or Linux machine
 	* @param function callback - callback (object {names, paths})
   * @return null
 */
-function getDriveListMac (callback) {
+function getDriveListNix (callback) {
   var names = []
   var paths = []
   drivelist.list(function (error, disks) {
@@ -1869,29 +1918,30 @@ function getDriveListMac (callback) {
       console.error(error)
       callback({names: [],paths: []})
     }else {
-      var length = disks.length
-
-      df(function (error, drives) {
-        if (error) {
-          console.error(error)
-          callback({names: [],paths: []})
-          return
-        }
-
-        for ( var x = 0; x < disks.length; x++) {
-          if (disks[x].description == 'SuperDrive') {
+      for ( var i = 0; i < disks.length; i++) {
+        if (process.platform == 'darwin') {
+          // skip the DVD drive on Mac
+          if (disks[i].description == 'SuperDrive') {
             continue
           }
+        }
 
-          for ( var y = 0; y < drives.length; y++) {
-            if ((! disks[x].system) && drives[y].filesystem.indexOf(disks[x].device) != -1) {
-              names.push(drives[y].mount.substr(9))
-              paths.push(disks[x].device)
+        getMountPoint(disks[i].device, disks[i].mountpoint, i, function (mntPoint, j) {
+          if ((!disks[j].system) && mntPoint) {
+            // only add the device if it isn't already in the list, or if it is in the list but the current loop device name is shorter then overwrite the longer name
+            if (paths.indexOf(disks[j].device) == -1) {
+              names.push(mntPoint.substr(mntPoint.lastIndexOf('/') + 1))
+              paths.push(disks[j].device)
+            } else if (paths.indexOf(disks[j].device) != -1 && names[paths.indexOf(disks[j].device)].length > mntPoint.substr(mntPoint.lastIndexOf('/') + 1).length) {
+              names[paths.indexOf(disks[j].device)] = mntPoint.substr(mntPoint.lastIndexOf('/') + 1)
             }
           }
-        }
-        callback({names: names,paths: paths})
-      })
+          if (j + 1 == disks.length) {
+            callback({names: names, paths: paths})
+            return
+          }
+        })
+      }
     }
   })
 }
@@ -1903,27 +1953,52 @@ function getDriveListMac (callback) {
 	* @param function callback - callback (object {names, paths})
   * @return null
 */
-function getMountPoint (device, callback) {
+function getMountPoint (device, mountpoint, counterPassthrough, callback) {
   if (process.platform == 'win32') {
-    callback(false)
+    callback(false, counterPassthrough)
     return
-  }
-  else if (process.platform == 'darwin') {
+  } else if (process.platform == 'darwin') {
     df(function (error, drives) {
       if (error) {
         console.error(error)
-        callback({names: [],paths: []})
         return
       }
 
       for ( var i = 0; i < drives.length; i++) {
         if (drives[i].filesystem.indexOf(device) != -1) {
-          callback(drives[i].mount)
+          callback(drives[i].mount, counterPassthrough)
           return
         }
       }
-      callback(false)
+      callback(false, counterPassthrough)
     })
+  } else if (process.platform == 'linux') {
+    // if (mountpoint == '' || typeof currentNumber === 'undefined') {
+    // use the df method if we haven't been given the mountpoint
+    df(function (error, drives) {
+      if (error) {
+        console.error(error)
+        return
+      }
+
+      for ( var i = 0; i < drives.length; i++) {
+        if (drives[i].filesystem.indexOf(device) != -1) {
+          callback(drives[i].mount, counterPassthrough)
+          return
+        }
+      }
+      callback(false, counterPassthrough)
+    })
+  /*} else {
+    if (mountpoint.indexOf(',') != -1) {
+      mountpoint = mountpoint.split(',')
+      for (var i = 0; i < mountpoint.length; i++) {
+        callback(mountpoint[i], counterPassthrough)
+      }
+    } else {
+      callback(mountpoint, counterPassthrough)
+    }
+  }*/
   }
 }
 
@@ -2378,14 +2453,13 @@ document.body.ondrop = (ev) => {
   }
 }
 
-
-function importTestBlock(filepath) {
+function importTestBlock (filepath) {
   fs.stat(filepath, function (error, stats) {
     if (stats.isDirectory()) {
       if (process.platform == 'win32') {
         var folderName = filepath.split('\\').slice(-1)[0]
         var jsonFile = path.normalize(filepath + '\\' + folderName + '.json')
-      }else{
+      }else {
         var folderName = filepath.split('/').slice(-1)[0]
         var jsonFile = path.normalize(filepath + '/' + folderName + '.json')
       }
@@ -2393,7 +2467,7 @@ function importTestBlock(filepath) {
         if (! error) {
           if (process.platform == 'win32') {
             var blocksFolder = '\\..\\pibakery-blocks\\'
-          }else{
+          }else {
             var blocksFolder = '/../pibakery-blocks/'
           }
           fs.stat(path.normalize(__dirname + blocksFolder + folderName), function (error, stats) {
