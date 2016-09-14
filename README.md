@@ -1,7 +1,7 @@
 # PiBakery
 ===============
-[![Dependency Status](https://img.shields.io/david/davidferguson/pibakery.svg)](https://david-dm.org/davidferguson/pibakery)
-[![devDependency Status](https://img.shields.io/david/dev/davidferguson/pibakery.svg?maxAge=2592000)]()
+![Dependency Status](https://img.shields.io/david/davidferguson/pibakery.svg)
+![devDependency Status](https://img.shields.io/david/dev/davidferguson/pibakery.svg?maxAge=2592000)
 
 The blocks based, easy to use setup tool for Raspberry Pi
 
@@ -31,6 +31,10 @@ And install the required node modules using
 `npm install`
 </br>
 This will take a few minutes to complete.
+
+If you're using Mac OS X, you'll then need to create the folder `/Library/Application Support/PiBakery/os/`, which is used to store the OS .img files. You can either do this in Finder, or by using the command
+</br>
+`mkdir -p '/Library/Application Support/PiBakery/os/'` in Terminal.
 
 You can then run PiBakery using
 </br>
