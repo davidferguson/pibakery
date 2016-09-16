@@ -64,6 +64,7 @@ var firstBoot = true
 var currentMode = 'write'
 var piBakeryPath
 var tempBlocks = []
+var blockSupportedOs = {}
 
 /**
   * @desc checks that the os and blocks exist, and sets up PiBakery
@@ -87,197 +88,35 @@ function getOsPath () {
   * @return null
 */
 function initialise () {
-  fs.stat(path.normalize(getOsPath() + 'raspbian-pibakery.img'), function (error, stats) {
+  fs.stat(path.normalize(__dirname + '/../pibakery-blocks/info.json'), function (error, stats) {
     if (error) {
       console.error(error)
-      fs.stat(path.normalize(getOsPath() + 'info.json'), function (error, stats) {
-        if (error) {
-          console.error(error)
-          fs.writeFile(path.normalize(getOsPath() + 'info.json'), '', function (error) {
-            if (error) {
-              console.error(error)
-              // Well, I have no idea what to do now. Reinstall?
-              alert('Internal PiBakery Error - please reinstall')
-              return
-            }
-            fixRaspbian(1)
-            return
-          })
-        }else {
-          fixRaspbian(1)
-          return
-        }
-      })
+      fixBlocks()
+      return
     }
-    fs.stat(path.normalize(getOsPath() + 'info.json'), function (error, stats) {
-      if (error) {
-        console.error(error)
-        fixRaspbian(2)
-        return
-      }
-      fs.stat(path.normalize(__dirname + '/../pibakery-blocks/info.json'), function (error, stats) {
-        if (error) {
-          console.error(error)
-          fixBlocks()
-          return
-        }
-        document.getElementById('blockly_editor').style.display = 'block'
-        document.getElementsByClassName('spinner')[0].style.display = 'none'
-        document.getElementById('credits').style.display = 'none'
-        workspace = Blockly.inject('blockly_editor', {toolbox: document.getElementById('toolbox')})
-        workspace.addChangeListener(validateBlocks)
-        loadBlocks()
-        document.getElementById('flashSD').addEventListener('click', writeToSd)
-        document.getElementById('importRecipe').addEventListener('click', importRecipe)
-        document.getElementById('exportRecipe').addEventListener('click', exportRecipe)
-        checkForRaspbianUpdates(function () {
-          checkForBlockUpdates()
-        })
-        // implement copy and paste in Blockly
-        ipcRenderer.on('paste', function (event, clipboard) {
-          document.getElementsByClassName('blocklyHtmlInput')[0].value = clipboard
-        })
-        ipcRenderer.on('testBlock', function (event) {
-          importTestBlock(dialog.showOpenDialog({properties: ['openDirectory']})[0])
-        })
-      })
+    document.getElementById('blockly_editor').style.display = 'block'
+    document.getElementsByClassName('spinner')[0].style.display = 'none'
+    document.getElementById('credits').style.display = 'none'
+    workspace = Blockly.inject('blockly_editor', {toolbox: document.getElementById('toolbox')})
+    workspace.addChangeListener(validateBlocks)
+    loadBlocks()
+    document.getElementById('flashSD').addEventListener('click', writeToSd)
+    document.getElementById('importRecipe').addEventListener('click', importRecipe)
+    document.getElementById('exportRecipe').addEventListener('click', exportRecipe)
+    checkForRaspbianUpdates(function () {
+      checkForBlockUpdates()
+    })
+    // implement copy and paste in Blockly
+    ipcRenderer.on('paste', function (event, clipboard) {
+      document.getElementsByClassName('blocklyHtmlInput')[0].value = clipboard
+    })
+    ipcRenderer.on('testBlock', function (event) {
+      importTestBlock(dialog.showOpenDialog({properties: ['openDirectory']})[0])
     })
   })
 }
 
 initialise()
-
-/**
-  * @desc redownloads the OS if it hasn't been found by initialise()
-  * @param string errorType - whether to redownload a specific version of the OS
-  * @return null
-*/
-function fixRaspbian (errorType) {
-  isOnline(function (error, online) {
-    if (error) {
-      console.error(error)
-    }
-    var hider = document.createElement('div')
-    hider.setAttribute('id', 'hider')
-    document.body.appendChild(hider)
-
-    var writeDiv = document.createElement('div')
-    writeDiv.setAttribute('id', 'writingMessage')
-    var title = document.createElement('p')
-    title.setAttribute('id', 'writeProgressTitle')
-    title.innerHTML = 'PiBakery Error'
-    var writeAnimationDiv = document.createElement('p')
-    writeAnimationDiv.setAttribute('class', 'infoParagraph')
-    writeAnimationDiv.innerText = 'PiBakery has encounted an error on starting up, as it is unable to find the Raspbian operating system.'
-    var writeAnimationDiv2 = document.createElement('p')
-    writeAnimationDiv2.setAttribute('class', 'infoParagraph')
-    if ((! error) && online) {
-      writeAnimationDiv2.innerText = 'PiBakery can attempt to fix this for you. If this error persists, please reinstall PiBakery.'
-    }else {
-      writeAnimationDiv2.innerText = 'PiBakery can attempt to fix this for you, if you connect to the internet. Otherwise, please reinstall PiBakery.'
-    }
-    writeDiv.appendChild(title)
-    writeDiv.appendChild(writeAnimationDiv)
-    writeDiv.appendChild(writeAnimationDiv2)
-
-    if ((! error) && online) {
-      var writeButton = document.createElement('button')
-      writeButton.setAttribute('id', 'writeButton')
-      writeButton.innerHTML = 'Attempt Fix'
-      writeButton.addEventListener('click', function () {
-        if (errorType == 1) {
-          request.get('https://raw.githubusercontent.com/davidferguson/pibakery-raspbian/master/info.json', function (error, response, body) {
-            if (error) {
-              console.error(error)
-              return
-            }
-            if (response.statusCode == 200) {
-              var compressedHash = JSON.parse(body).compressedMD5
-              var uncompressedHash = JSON.parse(body).uncompressedMD5
-              var uncompressedSize = JSON.parse(body).uncompressedSize
-              var downloadUrl = JSON.parse(body).downloadUrl
-
-              hider.parentNode.removeChild(hider)
-              writeDiv.parentNode.removeChild(writeDiv)
-              updateRaspbian(downloadUrl, compressedHash, uncompressedHash, uncompressedSize, body, 1)
-            }
-          })
-        }
-        else if (errorType == 2) {
-          title.innerHTML = 'Attempting Auto-Fix'
-          writeAnimationDiv.setAttribute('class', '')
-          writeAnimationDiv.innerText = ''
-          writeAnimationDiv2.parentNode.removeChild(writeAnimationDiv2)
-          writeButton.parentNode.removeChild(writeButton)
-          closeButton.parentNode.removeChild(closeButton)
-
-          var writeAnimation = document.createElement('img')
-          writeAnimation.setAttribute('id', 'writeAnimation')
-          writeAnimation.setAttribute('class', 'updateAnimation')
-          writeAnimation.setAttribute('src', path.normalize(__dirname + '/img/updating.gif'))
-          writeAnimationDiv.appendChild(writeAnimation)
-
-          request.get('https://raw.githubusercontent.com/davidferguson/pibakery-raspbian/master/versions.json', function (error, response, body) {
-            if (error) {
-              console.error(error)
-              alert('Unable to connect to server. Please try again later, or reinstall PiBakery.')
-              return
-            }
-            if( (response.statusCode == 200) ) {
-              var raspbianVersions = JSON.parse(body)
-              md5File(path.normalize(getOsPath() + 'raspbian-pibakery.img'), function (error, sum) {
-                if (error) {
-                  console.error(error)
-                  alert('Unable to verify Raspbian. Please try again later, or reinstall PiBakery.')
-                  return
-                }
-                for ( var i = 0; i < raspbianVersions.length; i++) {
-                  if (raspbianVersions[i].hash == sum) {
-                    fs.writeJson(path.normalize(getOsPath() + 'info.json'), {version: raspbianVersions[i].version, uncompressedMD5: raspbianVersions[i].hash, raspbianDate: raspbianVersions[i].original}, function (error) {
-                      if (error) {
-                        console.error(error)
-                        displayError('Auto-Fix Failed', 'Unable to update info file', 'Please reinstall PiBakery to fix this issue.')
-                      }else {
-                        title.innerHTML = 'Auto-Fix Successful'
-                        writeAnimation.setAttribute('src', path.normalize(__dirname + '/img/success.png'))
-
-                        var closeBtnDiv = document.createElement('p')
-                        closeBtnDiv.setAttribute('id', 'closeBtnDiv')
-                        var closeBtn = document.createElement('button')
-                        closeBtn.setAttribute('id', 'closeBtn')
-                        closeBtn.innerHTML = 'Close'
-                        closeBtn.addEventListener('click', function () {
-                          hider.parentNode.removeChild(hider)
-                          writeDiv.parentNode.removeChild(writeDiv)
-                          initialise()
-                        })
-                        closeBtnDiv.appendChild(closeBtn)
-                        writeDiv.appendChild(closeBtnDiv)
-                      }
-                    })
-                    return
-                  }
-                }
-              })
-            }
-          })
-        }
-      })
-    }
-
-    var closeButton = document.createElement('button')
-    closeButton.setAttribute('id', 'closeButton')
-    closeButton.innerHTML = 'Close'
-    closeButton.addEventListener('click', function () {
-      hider.parentNode.removeChild(hider)
-      writeDiv.parentNode.removeChild(writeDiv)
-    })
-
-    writeDiv.appendChild(closeButton)
-    writeDiv.appendChild(writeButton)
-    document.body.appendChild(writeDiv)
-  })
-}
 
 /**
   * @desc redownloads the blocks if they hasn't been found by initialise()
@@ -441,37 +280,62 @@ function checkForBlockUpdates () {
   * @return null
 */
 function checkForRaspbianUpdates (cb) {
-  fs.readFile(path.normalize(getOsPath() + 'info.json'), 'utf8', function (error, data) {
+  fs.readFile(path.normalize(getOsPath() + 'images.json'), 'utf8', function (error, data) {
     if (error) {
       console.error(error)
       return
     }
-    var myOsVersion = JSON.parse(data).version
-    request.get('https://raw.githubusercontent.com/davidferguson/pibakery-raspbian/master/info.json', function (error, response, body) {
+    var localImagesJson = JSON.parse(data)
+    var installedImages = []
+    var installedImagesIndexes = []
+    for (var i=0; i<localImagesJson.length; i++) {
+      if (localImagesJson[i].installed) {
+        installedImages.push(localImagesJson[i].filename)
+        installedImagesIndexes.push(i)
+      }
+    }
+
+    request.get('https://gist.githubusercontent.com/davidferguson/249b28f3e41d6e9e69f8a5314320c913/raw/6b7e504f186c0f36c657eae0893bc6c6aeb8296b/images.json', function (error, response, body) {
       if (error) {
         console.error(error)
         return
       }
       if (response.statusCode == 200) {
-        var newOsVersion = JSON.parse(body).version
-        var compressedHash = JSON.parse(body).compressedMD5
-        var uncompressedHash = JSON.parse(body).uncompressedMD5
-        var uncompressedSize = JSON.parse(body).uncompressedSize
-        var downloadUrl = JSON.parse(body).downloadUrl
-
-        if (newOsVersion > myOsVersion) {
-          var choice = dialog.showMessageBox(
-            {
-              type: 'question',
-              buttons: ['Yes', 'No'],
-              title: 'PiBakery Update',
-              message: 'There is an update for Raspbian, the Raspberry Pi operating system. Although updating is not required, it is recommended.\nDo you want to update now?\nThis is a large file and could take several hours to download.'
-            })
-          if (choice == 0) {
-            updateRaspbian(downloadUrl, compressedHash, uncompressedHash, uncompressedSize, body, 0)
+        var images = JSON.parse(body)
+        for (var i=0; i<images.length; i++) {
+          var newOsVersion = images[i].version
+          var newOsFilename = images[i].filename
+          var index = installedImages.indexOf(newOsFilename)
+          if (index == -1) {
+            continue
           }
-        }else {
-          cb()
+          var myOsVersion = localImagesJson[index].version
+          var skipVersion = localImagesJson[index].skipVersion
+          var newOsName = images[i].displayName
+
+          if ((newOsVersion > myOsVersion) && (newOsVersion != skipVersion)) {
+            var choice = dialog.showMessageBox({
+              type: 'question',
+              buttons: ['Update now', 'Remind me later', 'Skip update'],
+              title: 'PiBakery Update',
+              message: 'There is an update for "' + newOsName + '", the Raspberry Pi operating system.\nThis is a large file and could take several hours to download.'
+            })
+            if (choice == 0) {
+              updateRaspbian(images[i])
+              //updateRaspbian(downloadUrl, compressedHash, uncompressedHash, uncompressedSize, body, 0, compressedFilename, uncompressedFilename, newOsFilename, newOsVersion)
+            } else if (choice == 2) {
+              localImagesJson[index].skipVersion = newOsVersion;
+              data = JSON.stringify(localImagesJson)
+              fs.writeFile(path.normalize(getOsPath() + 'images.json'), data, function (error) {
+                if (error) {
+                  console.error(error)
+                }
+              })
+            }
+            break
+          }else if ((i+1)==images.length){
+            cb()
+          }
         }
       }
     })
@@ -485,7 +349,7 @@ function checkForRaspbianUpdates (cb) {
 	* @param string downloadHash - the MD5 hash of the zip of the blocks. Used to
 	* verify that the download was successful
 	* @param string newBlocksInfo - the json info of the new blocks. Used to write
-	* the info.json file that identifies the blocks
+	* the --info.json-- images.json file that identifies the blocks
 	* @param bool fixing - whether we are updating of fixing. 1 when fixing, and 0
 	* when updating
   * @return null
@@ -734,8 +598,7 @@ function extract7z (archive, outputdir, callback) {
 }
 
 /**
-  * @desc called by fixRaspbian and checkForRaspbianUpdates, used to download
-	* the OS off GitHub
+  * @desc called by checkForRaspbianUpdates, used to download the OS off GitHub
   * @param string src - the URL of the 7z raspbian-pibakery on GitHub
 	* @param string raspbian7zHash - the MD5 hash of the 7z of the OS. Used to
 	* verify that the download was successful
@@ -746,13 +609,29 @@ function extract7z (archive, outputdir, callback) {
 	* @param integer extractedSize - the number of bytes of the extracted OS. Used
 	* to update the progress bar
 	* @param string newOsInfo - the JSON info of the version of raspbian. Used to
-	* write the info.json os file
+	* write the --info.json-- images.json os file
 	* @param bool fixing - whether we are updating of fixing. 1 when fixing, and 0
 	* when updating
+  * @param string compressedFilename - the filename of the compressed file once
+  * downloaded
+  * @param string uncompressedFilename - the filename that the compressed file
+  * will extract to
   * @return null
 */
-function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, newOsInfo, fixing) {
-  var writeDiv, title, writeAnimationDiv, writeAnimation, writeProgress
+//function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, newOsInfo, fixing, compressedFilename, uncompressedFilename, finalFilename, newOsVersion) {
+function updateRaspbian( osJsonInfo ) {
+  console.log(osJsonInfo)
+  var src = osJsonInfo.downloadUrl
+  var raspbian7zHash = osJsonInfo.compressedMD5
+  var raspbianImgHash = osJsonInfo.uncompressedMD5
+  var extractedSize = osJsonInfo.uncompressedSize
+  // newOsInfo and fixing
+  var compressedFilename = osJsonInfo.compressedFilename
+  var uncompressedFilename = osJsonInfo.uncompressedFilename
+  var finalFilename = osJsonInfo.filename
+  var newOsVersion = osJsonInfo.version
+
+  var writeDiv, title, writeAnimationDiv, writeAnimation, writeProgress, writeDetailedProgress
 
   isOnline(function (error, online) {
     if (error) {
@@ -768,11 +647,7 @@ function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, ne
     writeDiv.setAttribute('id', 'writingMessage')
     title = document.createElement('p')
     title.setAttribute('id', 'writeProgressTitle')
-    if (fixing) {
-      title.innerHTML = 'Attempting Auto-Fix'
-    }else {
-      title.innerHTML = 'Updating Raspbian'
-    }
+    title.innerHTML = 'Updating ' + osJsonInfo.displayName
     writeAnimationDiv = document.createElement('p')
     writeAnimation = document.createElement('img')
     writeAnimation.setAttribute('id', 'writeAnimation')
@@ -784,141 +659,99 @@ function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, ne
     writeProgress = document.createElement('progress')
     writeProgress.setAttribute('id', 'writeProgressbar')
     writeProgress.setAttribute('value', 0)
-    writeProgress.setAttribute('max', 1.21)
+    writeProgress.setAttribute('max', 1.3)
     writeDiv.appendChild(writeProgress)
+    writeDetailedProgress = document.createElement('p')
+    writeDetailedProgress.setAttribute('id', 'writeDetailedProgress')
+    writeDetailedProgress.innerText = 'Connecting to server...'
+    writeDiv.appendChild(writeDetailedProgress)
     document.body.appendChild(writeDiv)
 
     if (! online) {
-      if (fixing) {
-        alert('Unable to connect to server.\nTry again later, or reinstall PiBakery.')
-      }else {
-        alert('Unable to connect to server.\nTry updating later.')
-      }
+      alert('Unable to connect to server.\nTry updating later.')
     }else {
-      var saveName = path.normalize(getOsPath() + 'raspbian-pibakery.7z')
+      var saveName = path.normalize(getOsPath() + compressedFilename)
       var raspbianDownload = wget.download(src, saveName, {})
+      writeDetailedProgress.innerText = 'Downloading compressed file...'
       raspbianDownload.on('error', function (error) {
         console.error(error)
-        if (fixing) {
-          displayError('Auto-Fix Failed', 'Download Failed', 'Please try again, or reinstall PiBakery.')
-        }else {
-          displayError('Raspbian Update Failed', 'Download Failed', 'This might cause unexpected behaviour whilst using PiBakery.')
-        }
+        displayError('OS Update Failed', 'Download Failed', 'This might cause unexpected behaviour whilst using PiBakery.')
       })
       raspbianDownload.on('end', function (output) {
+        writeDetailedProgress.innerText = 'Verifying compressed file...'
         md5File(saveName, function (error, sum) {
           if (error) {
             console.error(error)
-            if (fixing) {
-              displayError('Auto-Fix Failed', 'Download Corrupted', 'Please try again, or reinstall PiBakery.')
-            }else {
-              displayError('Raspbian Update Failed', 'Download Corrupted', 'This might cause unexpected behaviour whilst using PiBakery.')
-            }
+            displayError('OS Update Failed', 'Download Corrupted', 'This might cause unexpected behaviour whilst using PiBakery.')
           }else {
             if (sum != raspbian7zHash) {
-              if (fixing) {
-                displayError('Auto-Fix Failed', 'Download Corrupted', 'Please try again, or reinstall PiBakery.')
-              }else {
-                displayError('Raspbian Update Failed', 'Download Corrupted', 'This might cause unexpected behaviour whilst using PiBakery.')
-              }
+              displayError('OS Update Failed', 'Download Corrupted', 'This might cause unexpected behaviour whilst using PiBakery.')
             }else {
+              writeDetailedProgress.innerText = 'Extracting file...'
               var extractProgress
               extract7z(saveName, path.normalize(getOsPath()), function (error) {
                 clearInterval(extractProgress)
                 if (error) {
                   console.error(error)
-                  if (fixing) {
-                    displayError('Auto-Fix Failed', 'Extract Failed', 'This might cause unexpected behaviour whilst using PiBakery.')
-                  }else {
-                    displayError('Raspbian Update Failed', 'Extract Failed', 'This might cause unexpected behaviour whilst using PiBakery.')
-                  }
+                  displayError('OS Update Failed', 'Extract Failed', 'This might cause unexpected behaviour whilst using PiBakery.')
                 }
                 getExtractedPath(function (filepath) // find where the .7z has been saved
                 {
                   if (! filepath) {
-                    if (fixing) {
-                      displayError('Auto-Fix Failed', 'Unable to locate 7z', 'Please try again, or reinstall PiBakery.')
-                      return
-                    }else {
-                      displayError('Raspbian Update Failed', 'Unable to locate 7z', 'This might cause unexpected behaviour whilst using PiBakery.')
-                      return
-                    }
+                    displayError('OS Update Failed', 'Unable to locate 7z', 'This might cause unexpected behaviour whilst using PiBakery.')
+                    return
                   }
+                  writeDetailedProgress.innerText = 'Verifying extracted file...'
                   md5File(filepath, function (error, sum) {
                     if (error) {
                       console.error(error)
-                      if (fixing) {
-                        displayError('Auto-Fix Failed', 'Unable to verify download', 'Please try again, or reinstall PiBakery.')
-                      }else {
-                        displayError('Raspbian Update Failed', 'Unable to verify download', 'This might cause unexpected behaviour whilst using PiBakery.')
-                      }
+                      displayError('OS Update Failed', 'Unable to verify download', 'This might cause unexpected behaviour whilst using PiBakery.')
                     }
                     else if (sum != raspbianImgHash) {
-                      if (fixing) {
-                        displayError('Auto-Fix Failed', 'Download Failed', 'Please try again, or reinstall PiBakery.')
-                      }else {
-                        displayError('Raspbian Update Failed', 'Download Corrupted', 'This might cause unexpected behaviour whilst using PiBakery.')
-                      }
+                      displayError('OS Update Failed', 'Download Corrupted', 'This might cause unexpected behaviour whilst using PiBakery.')
                     }else {
+                      writeDetailedProgress.innerText = 'Removing temporary files...'
                       fs.remove(saveName, function (error) // delete the 7z
                       {
                         if (error) {
                           console.error(error)
-                          if (fixing) {
-                            displayError('Auto-Fix Failed', 'Unable to remove 7z', 'Please try again, or reinstall PiBakery.')
-                          }else {
-                            displayError('Raspbian Update Failed', 'Unable to remove 7z', 'This might cause unexpected behaviour whilst using PiBakery.')
-                          }
+                          displayError('OS Update Failed', 'Unable to remove 7z', 'This might cause unexpected behaviour whilst using PiBakery.')
                         }else {
-                          fs.remove(path.normalize(getOsPath() + 'raspbian-pibakery.img'), function (error) // delete the old raspbian.img
+                          fs.remove(path.normalize(getOsPath() + finalFilename), function (error) // delete the old raspbian.img
                           {
                             if (error && (! fixing)) // if we're fixing the .img won't exist, so ignore this error.
                             {
                               console.error(error)
-                              displayError('Raspbian Update Failed', 'Removal Failed', 'This might cause unexpected behaviour whilst using PiBakery.')
+                              displayError('OS Update Failed', 'Removal Failed', 'This might cause unexpected behaviour whilst using PiBakery.')
                             }else {
-                              fs.rename(filepath, path.normalize(getOsPath() + 'raspbian-pibakery.img'), function (error) // rename new-raspbian.img to raspbian.img
+                              fs.rename(filepath, path.normalize(getOsPath() + finalFilename), function (error) // rename new-raspbian.img to raspbian.img
                               {
                                 if (error) {
                                   console.error(error)
-                                  if (fixing) {
-                                    displayError('Auto-Fix Failed', 'Processing Failed', 'Please try again, or reinstall PiBakery.')
-                                  }else {
-                                    displayError('Raspbian Update Failed', 'Processing Failed', 'This might cause unexpected behaviour whilst using PiBakery.')
-                                  }
+                                  displayError('OS Update Failed', 'Processing Failed', 'This might cause unexpected behaviour whilst using PiBakery.')
                                 }else {
-                                  fs.writeFile(path.normalize(getOsPath() + 'info.json'), newOsInfo, function (error) {
+                                  fs.readFile(path.normalize(getOsPath() + 'images.json'), 'utf8', function (error, data) {
                                     if (error) {
                                       console.error(error)
-                                      if (fixing) {
-                                        displayError('Auto-Fix Failed', 'Unable to update info file', 'Please try again, or reinstall PiBakery.')
-                                      }else {
-                                        displayError('Raspbian Update Failed', 'Unable to update info file', 'This might cause unexpected behaviour whilst using PiBakery.')
+                                      return
+                                    }
+                                    data = JSON.parse(data)
+                                    for (var i=0; i<data.length; i++) {
+                                      if (data[i].filename == finalFilename) {
+                                        data[i].version = newOsVersion
                                       }
-                                    }else {
-                                      if (fixing) {
-                                        title.innerHTML = 'Auto-Fix Successful'
-                                        writeAnimation.setAttribute('src', path.normalize(__dirname + '/img/success.png'))
-
-                                        writeProgress.parentNode.removeChild(writeProgress)
-
-                                        var closeBtnDiv = document.createElement('p')
-                                        closeBtnDiv.setAttribute('id', 'closeBtnDiv')
-                                        var closeBtn = document.createElement('button')
-                                        closeBtn.setAttribute('id', 'closeBtn')
-                                        closeBtn.innerHTML = 'Close'
-                                        closeBtn.addEventListener('click', function () {
-                                          hider.parentNode.removeChild(hider)
-                                          writeDiv.parentNode.removeChild(writeDiv)
-                                          initialise()
-                                        })
-                                        closeBtnDiv.appendChild(closeBtn)
-                                        writeDiv.appendChild(closeBtnDiv)
+                                    }
+                                    data = JSON.stringify(data)
+                                    fs.writeFile(path.normalize(getOsPath() + 'images.json'), data, function (error) {
+                                      if (error) {
+                                        console.error(error)
+                                        displayError('OS Update Failed', 'Unable to update info file', 'This might cause unexpected behaviour whilst using PiBakery.')
                                       }else {
                                         title.innerHTML = 'Update Successful'
                                         writeAnimation.setAttribute('src', path.normalize(__dirname + '/img/success.png'))
 
                                         writeProgress.parentNode.removeChild(writeProgress)
+                                        writeDetailedProgress.parentNode.removeChild(writeDetailedProgress)
 
                                         var closeBtnDiv = document.createElement('p')
                                         closeBtnDiv.setAttribute('id', 'closeBtnDiv')
@@ -932,7 +765,7 @@ function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, ne
                                         closeBtnDiv.appendChild(closeBtn)
                                         writeDiv.appendChild(closeBtnDiv)
                                       }
-                                    }
+                                    })
                                   })
                                 }
                               })
@@ -942,7 +775,7 @@ function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, ne
                       })
                     }
                   })
-                })
+                }, uncompressedFilename)
               })
               extractProgress = setInterval(function () {
                 getExtractedPath(function (filepath) {
@@ -954,7 +787,7 @@ function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, ne
                       }
                     })
                   }
-                })
+                }, uncompressedFilename)
               }, 1000)
             }
           }
@@ -974,11 +807,11 @@ function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, ne
 	* @param number currentNumber - the current loop getExtractedPath is on
   * @return null
 */
-function getExtractedPath (callback, currentNumber) {
+function getExtractedPath (callback, filepath, currentNumber) {
   if (typeof currentNumber === 'undefined') { currentNumber = 0; }
   var paths = [
-    path.normalize(getOsPath() + 'raspbian-pibakery-new.img'),
-    path.normalize(getOsPath() + '../raspbian-pibakery-new.img')
+    path.normalize(getOsPath() + filepath),
+    path.normalize(getOsPath() + '../' + filepath)
   ]
   if (currentNumber >= paths.length) {
     callback(false)
@@ -987,7 +820,7 @@ function getExtractedPath (callback, currentNumber) {
   fs.stat(paths[currentNumber], function (error, stats) {
     if (error) {
       console.error(error)
-      getExtractedPath(callback, currentNumber + 1)
+      getExtractedPath(callback, filepath, currentNumber + 1)
     }else {
       callback(paths[currentNumber])
       return
@@ -1049,6 +882,9 @@ function importExisting (drives) {
   if ((drives.device) && (! drives.system) && (currentMode == 'write') && (Blockly.PiBakery.workspaceToCode(workspace) == '') && (! document.getElementById('hider')) && (drives.description != 'SuperDrive')) {
     getMountPoint(drives.device, drives.mountpoint, 0, function (darwinMnt, __i) {
       if (process.platform == 'darwin' || process.platform == 'linux') {
+        if (!darwinMnt) {
+          return
+        }
         piBakeryPath = path.normalize(darwinMnt + '/PiBakery/')
       }
       else if (process.platform == 'win32') {
@@ -1424,6 +1260,9 @@ function displayError (titleMsg, errorMsg, behaviourMsg) {
 
     writeAnimation.parentNode.removeChild(writeAnimation)
     writeProgress.parentNode.removeChild(writeProgress)
+    if (!!document.getElementById('writeDetailedProgress')) {
+      document.getElementById('writeDetailedProgress').parentNode.removeChild(document.getElementById('writeDetailedProgress'))
+    }
 
     var closeBtnDiv = document.createElement('p')
     closeBtnDiv.setAttribute('id', 'closeBtnDiv')
@@ -1450,7 +1289,10 @@ function writeToSd () {
   writeTryCount = 0
   var imageFile = path.normalize(getOsPath() + 'raspbian-pibakery.img')
 
-  createSdChooser(function (devicePath, name) {
+  createSdChooser(function (devicePath, name, operatingSystemFilename) {
+    if (operatingSystemFilename) {
+      var imageFile = path.normalize(getOsPath() + operatingSystemFilename)
+    }
     var choice = dialog.showMessageBox(
       {
         type: 'question',
@@ -2009,99 +1851,170 @@ function getMountPoint (device, mountpoint, counterPassthrough, callback) {
   * @return null
 */
 function createSdChooser (callback) {
-  getDriveList(function (devices) {
-    var sdNames = devices.names
-    var sdPaths = devices.paths
+  getOsList(function (operatingSystems) {
+    getDriveList(function (devices) {
+      var sdNames = devices.names
+      var sdPaths = devices.paths
 
-    var hider = document.createElement('div')
-    hider.setAttribute('id', 'hider')
-    var hiderClear = function () {
-      clearInterval(deviceUpdater)
-      hider.parentNode.removeChild(hider)
-      selectionDiv.parentNode.removeChild(selectionDiv)
-    }
-    hider.addEventListener('click', hiderClear)
+      var hider = document.createElement('div')
+      hider.setAttribute('id', 'hider')
+      var hiderClear = function () {
+        clearInterval(deviceUpdater)
+        hider.parentNode.removeChild(hider)
+        selectionDiv.parentNode.removeChild(selectionDiv)
+      }
+      hider.addEventListener('click', hiderClear)
 
-    var selectionDiv = document.createElement('div')
-    selectionDiv.setAttribute('id', 'sdSelector')
+      var selectionDiv = document.createElement('div')
+      selectionDiv.setAttribute('id', 'sdSelector')
 
-    var sdSelector = document.createElement('select')
-    sdSelector.setAttribute('id', 'sdChoice')
+      var sdSelector = document.createElement('select')
+      sdSelector.setAttribute('id', 'sdChoice')
+      for ( var x = 0; x < sdNames.length; x++) {
+        var sdChoice = document.createElement('option')
+        sdChoice.setAttribute('value', sdPaths[x])
+        sdChoice.innerHTML = sdNames[x]
+        sdSelector.appendChild(sdChoice)
+      }
 
-    for ( var x = 0; x < sdNames.length; x++) {
-      var sdChoice = document.createElement('option')
-      sdChoice.setAttribute('value', sdPaths[x])
-      sdChoice.innerHTML = sdNames[x]
-      sdSelector.appendChild(sdChoice)
-    }
-
-    var writeButton = document.createElement('button')
-    writeButton.disabled = (devices.names.length == 0)
-    writeButton.setAttribute('id', 'writeButton')
-    writeButton.innerHTML = 'Start Write'
-    writeButton.addEventListener('click', function () {
-      var chosenDevicePath = document.getElementById('sdChoice').options[document.getElementById('sdChoice').selectedIndex].value
-      var chosenDeviceName = document.getElementById('sdChoice').options[document.getElementById('sdChoice').selectedIndex].innerHTML
-      clearInterval(deviceUpdater)
-      hider.removeEventListener('click', hiderClear)
-      selectionDiv.parentNode.removeChild(selectionDiv)
-      callback(chosenDevicePath, chosenDeviceName)
-    })
-
-    var closeButton = document.createElement('button')
-    closeButton.setAttribute('id', 'closeButton')
-    closeButton.innerHTML = 'Close'
-    closeButton.addEventListener('click', hiderClear)
-
-    var lineBreak = document.createElement('br')
-
-    selectionDiv.appendChild(sdSelector)
-    selectionDiv.appendChild(lineBreak)
-    selectionDiv.appendChild(closeButton)
-    selectionDiv.appendChild(writeButton)
-    document.body.appendChild(hider)
-    document.body.appendChild(selectionDiv)
-
-    var deviceUpdater = setInterval(function () {
-      getDriveList(function (devices) {
-        writeButton.disabled = (devices.names.length == 0)
-
-        var sdNames = devices.names
-        var sdPaths = devices.paths
-
-        var sdSelector = document.getElementById('sdChoice')
-        if (! sdSelector) {
-          return
-        }
-
-        var currentDevices = []
-        var changedList = false
-        for (var i = 0; i < sdSelector.children.length; i++) {
-          if (sdPaths.indexOf(sdSelector.children[i].value) == -1) {
-            sdSelector.removeChild(sdSelector.children[i])
-            sdPaths.splice(i, 1)
-            sdNames.splice(i, 1)
-            changedList = true
-          }else {
-            currentDevices.push(sdSelector.children[i].value)
+      var osSelector = document.createElement('select')
+      osSelector.setAttribute('id', 'osChoice')
+      osSelector.addEventListener("change", function() {
+        var chosenOperatingSystem = document.getElementById('osChoice').options[document.getElementById('osChoice').selectedIndex].value
+        var chosenOperatingSystemName = document.getElementById('osChoice').options[document.getElementById('osChoice').selectedIndex].innerHTML
+        var blocksRequired = generateScript()[3]
+        var compatible = true
+        var message = 'Some of the blocks you are using are not fully compatible with ' + chosenOperatingSystemName + ':\n'
+        for (var i=0; i<blocksRequired.length; i++) {
+          if (blockSupportedOs[blocksRequired[i]].indexOf(chosenOperatingSystem) == -1) {
+            compatible = false
+            message = message + '\n' + blocksRequired[i]
           }
         }
-
-        for ( var x = 0; x < sdNames.length; x++) {
-          if (currentDevices.indexOf(sdPaths[x]) == -1) {
-            var sdChoice = document.createElement('option')
-            sdChoice.setAttribute('value', sdPaths[x])
-            sdChoice.innerHTML = sdNames[x]
-            sdSelector.appendChild(sdChoice)
-            sdSelector.value = sdPaths[x]
-            changedList = true
-          }
-        }
-        if (changedList) {
-          sdSelector.blur()
+        if (!compatible) {
+          alert(message)
         }
       })
-    }, 1000)
+      for ( var x = 0; x < operatingSystems.length; x++) {
+        var osChoice = document.createElement('option')
+        osChoice.setAttribute('value', operatingSystems[x].filename)
+        osChoice.innerHTML = operatingSystems[x].displayName
+        osSelector.appendChild(osChoice)
+      }
+
+      var writeButton = document.createElement('button')
+      writeButton.disabled = (devices.names.length == 0)
+      writeButton.setAttribute('id', 'writeButton')
+      writeButton.innerHTML = 'Start Write'
+      writeButton.addEventListener('click', function () {
+        var chosenOperatingSystem = document.getElementById('osChoice').options[document.getElementById('osChoice').selectedIndex].value
+        var chosenDevicePath = document.getElementById('sdChoice').options[document.getElementById('sdChoice').selectedIndex].value
+        var chosenDeviceName = document.getElementById('sdChoice').options[document.getElementById('sdChoice').selectedIndex].innerHTML
+        clearInterval(deviceUpdater)
+        hider.removeEventListener('click', hiderClear)
+        selectionDiv.parentNode.removeChild(selectionDiv)
+        callback(chosenDevicePath, chosenDeviceName, chosenOperatingSystem)
+      })
+
+      var closeButton = document.createElement('button')
+      closeButton.setAttribute('id', 'closeButton')
+      closeButton.innerHTML = 'Close'
+      closeButton.addEventListener('click', hiderClear)
+
+      //selectionDiv.appendChild(sdSelector)
+      //selectionDiv.appendChild(osSelector)
+
+      var selectionTable = document.createElement('table')
+      selectionTable.setAttribute('id', 'selectionTable')
+
+      var sdRow = document.createElement('tr')
+      selectionTable.appendChild(sdRow)
+      var sdTextColumn = document.createElement('td')
+      sdRow.appendChild(sdTextColumn)
+      var sdText = document.createElement('span')
+      sdText.innerText = 'SD Card:'
+      sdTextColumn.appendChild(sdText)
+      var sdSelectColumn = document.createElement('td')
+      sdRow.appendChild(sdSelectColumn)
+      sdSelectColumn.appendChild(sdSelector)
+
+      var osRow = document.createElement('tr')
+      selectionTable.appendChild(osRow)
+      var osTextColumn = document.createElement('td')
+      osRow.appendChild(osTextColumn)
+      var osText = document.createElement('span')
+      osText.innerText = 'Operating System:'
+      osText.style.paddingRight = '7px'
+      osTextColumn.appendChild(osText)
+      var osSelectColumn = document.createElement('td')
+      osRow.appendChild(osSelectColumn)
+      osSelectColumn.appendChild(osSelector)
+
+
+      selectionDiv.appendChild(selectionTable)
+      selectionDiv.appendChild(closeButton)
+      selectionDiv.appendChild(writeButton)
+      document.body.appendChild(hider)
+      document.body.appendChild(selectionDiv)
+
+      var deviceUpdater = setInterval(function () {
+        getDriveList(function (devices) {
+          writeButton.disabled = (devices.names.length == 0)
+
+          var sdNames = devices.names
+          var sdPaths = devices.paths
+
+          var sdSelector = document.getElementById('sdChoice')
+          if (! sdSelector) {
+            return
+          }
+
+          var currentDevices = []
+          var changedList = false
+          for (var i = 0; i < sdSelector.children.length; i++) {
+            if (sdPaths.indexOf(sdSelector.children[i].value) == -1) {
+              sdSelector.removeChild(sdSelector.children[i])
+              sdPaths.splice(i, 1)
+              sdNames.splice(i, 1)
+              changedList = true
+            }else {
+              currentDevices.push(sdSelector.children[i].value)
+            }
+          }
+
+          for ( var x = 0; x < sdNames.length; x++) {
+            if (currentDevices.indexOf(sdPaths[x]) == -1) {
+              var sdChoice = document.createElement('option')
+              sdChoice.setAttribute('value', sdPaths[x])
+              sdChoice.innerHTML = sdNames[x]
+              sdSelector.appendChild(sdChoice)
+              sdSelector.value = sdPaths[x]
+              changedList = true
+            }
+          }
+          if (changedList) {
+            sdSelector.blur()
+          }
+        })
+      }, 1000)
+    })
+  })
+}
+
+function getOsList(cb) {
+  fs.readFile(path.normalize(getOsPath() + 'images.json'), 'utf8', function (error, data) {
+    if (error) {
+      console.error(error)
+      return
+    }
+    var localImagesJson = JSON.parse(data)
+    var installedImages = []
+    for (var i=0; i<localImagesJson.length; i++) {
+      if (localImagesJson[i].installed) {
+        installedImages.push(localImagesJson[i])
+      }
+    }
+    cb(installedImages)
   })
 }
 
@@ -2160,20 +2073,7 @@ function loadBlocks () {
               newCategory.setAttribute('id', categories[x].name)
               document.getElementById('toolbox').appendChild(newCategory)
             }
-
-            // add the blocks as normal
-            for ( var x = 0; x < blocks.length; x++) {
-              var blockName = blocks[x]
-              var jsonPath = path.normalize(__dirname + '/../pibakery-blocks/' + blockName + '/' + blockName + '.json')
-              fs.readFile(jsonPath, 'utf8', function (error, data) {
-                if (error) {
-                  console.error(error)
-                  alert("Error loading block '" + blockName + "'.\nIf this error persists, please reinstall PiBakery.")
-                }else {
-                  importBlock(data, categoryTypeText, categoryTypeColour)
-                }
-              })
-            }
+            asyncLoadBlocks(blocks, categoryTypeText, categoryTypeColour, 0)
           }
         })
       }
@@ -2182,9 +2082,37 @@ function loadBlocks () {
 }
 
 /**
-  * @desc called by loadBlocks, parses the JSON of the block and import it into
-	* pibakery (toolbox and script system)
+  * @desc called by loadBlocks, loops and loads the blocks in order, so they are
+  * in the correct order in the toolbox
+	* @param array blocks - the array of block names to import
+  * @param array categoryTypeText - the array of category names
+  * @param array categoryTypeColour - the array of category colours
+  * @param integer x - the current repetition
+  * @return null
+*/
+function asyncLoadBlocks(blocks, categoryTypeText, categoryTypeColour, x) {
+  if (x == blocks.length) {
+    return
+  }
+  var blockName = blocks[x]
+  var jsonPath = path.normalize(__dirname + '/../pibakery-blocks/' + blockName + '/' + blockName + '.json')
+  fs.readFile(jsonPath, 'utf8', function (error, data) {
+    if (error) {
+      console.error(error)
+      alert("Error loading block '" + blockName + "'.\nIf this error persists, please reinstall PiBakery.")
+    }else {
+      importBlock(data, categoryTypeText, categoryTypeColour)
+      asyncLoadBlocks(blocks, categoryTypeText, categoryTypeColour, x+1)
+    }
+  })
+}
+
+/**
+  * @desc called by asyncLoadBlocks, parses the JSON of the block and import it
+  * into pibakery (toolbox and script system)
 	* @param string blockCode - the JSON data of the block being imported
+  * @param array typeText - the array of category names
+  * @param array typeColour - the array of category colours
   * @return null
 */
 function importBlock (blockCode, typeText, typeColour) {
@@ -2208,6 +2136,9 @@ function importBlock (blockCode, typeText, typeColour) {
   var blockColour = typeColour[typeText.indexOf(blockJSON.type)]
   var blockArgs = blockJSON.args
   var numArgs = blockArgs.length
+  var supportedOperatingSystems = blockJSON.supportedOperatingSystems
+
+  blockSupportedOs[blockName] = supportedOperatingSystems
 
   var blocklyBlock = {}
   blocklyBlock.id = blockName
