@@ -1132,19 +1132,19 @@ function generateScript () {
         // actually generate the code (with whiptail dialogs as well)
         if (codeType == 'everyBoot') {
           everyBootCount++
-          everyBootCode = everyBootCode + '\n' + currentLine.replace('\t', '') + ' >/dev/null 2>&1  || true'
+          everyBootCode = everyBootCode + '\n' + currentLine.replace('\t', '') + ' >>/boot/PiBakery/everyboot.log 2>&1  || true'
           // everyBootCode = everyBootCode + "\necho $(expr $PERCENTAGE \\* " + everyBootCount + " )"
           everyBootCode = everyBootCode + '\necho XXX\necho $(expr $PERCENTAGE \\* ' + everyBootCount + ' )\necho "\\nProcessing Every Boot Script\\n\\nRunning Block: ' + currentLine.split('/boot/PiBakery/blocks/')[1].split('/')[0] + '"\necho XXX'
         }
         else if (codeType == 'firstBoot') {
           firstBootCount++
-          firstBootCode = firstBootCode + '\n' + currentLine.replace('\t', '') + ' >/dev/null 2>&1 || true'
+          firstBootCode = firstBootCode + '\n' + currentLine.replace('\t', '') + ' >>/boot/PiBakery/firstboot.log 2>&1 || true'
           // firstBootCode = firstBootCode + "\necho $(expr $PERCENTAGE \\* " + firstBootCount + " )"
           firstBootCode = firstBootCode + '\necho XXX\necho $(expr $PERCENTAGE \\* ' + firstBootCount + ' )\necho "\\nProcessing First Boot Script\\n\\nRunning Block: ' + currentLine.split('/boot/PiBakery/blocks/')[1].split('/')[0] + '"\necho XXX'
         }
         else if (codeType == 'nextBoot') {
           nextBootCount++
-          nextBootCode = nextBootCode + '\n' + currentLine.replace('\t', '') + ' >/dev/null 2>&1 || true'
+          nextBootCode = nextBootCode + '\n' + currentLine.replace('\t', '') + ' >>/boot/PiBakery/nextboot.log 2>&1 || true'
           // nextBootCode = nextBootCode + "\necho $(expr $PERCENTAGE \\* " + nextBootCount + " )"
           nextBootCode = nextBootCode + '\necho XXX\necho $(expr $PERCENTAGE \\* ' + nextBootCount + ' )\necho "\\nProcessing Next Boot Script\\n\\nRunning Block: ' + currentLine.split('/boot/PiBakery/blocks/')[1].split('/')[0] + '"\necho XXX'
         }
