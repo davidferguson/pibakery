@@ -32,9 +32,7 @@ And install the required node modules using
 </br>
 This will take a few minutes to complete.
 
-If you're using Mac OS X, you'll then need to create the folder `/Library/Application Support/PiBakery/os/`, which is used to store the OS .img files. You can either do this in Finder, or by using the command
-</br>
-`mkdir -p '/Library/Application Support/PiBakery/os/'` in Terminal.
+If you're on macOS it's important you run `npm run setup` the first time [to create a folder inside Application Support](https://github.com/davidferguson/pibakery/issues/29).
 
 You can then run PiBakery using
 </br>
