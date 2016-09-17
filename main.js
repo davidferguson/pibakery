@@ -77,5 +77,9 @@ electron.app.on('ready', function()
     {
       mainWindow.webContents.send('paste', electron.clipboard.readText());
     });
-	});
+    electronLocalshortcut.register(mainWindow, 'CommandOrControl+Shift+Plus', function()
+    {
+      mainWindow.webContents.send('testBlock');
+    });
+  });
 });
