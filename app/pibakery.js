@@ -65,6 +65,8 @@ var currentMode = 'write'
 var piBakeryPath
 var tempBlocks = []
 var blockSupportedOs = {}
+var categoryTypeText = ['hat']
+var categoryTypeColour = [20]
 
 /**
   * @desc checks that the os and blocks exist, and sets up PiBakery
@@ -2025,57 +2027,37 @@ function getOsList(cb) {
 */
 function loadBlocks () {
   fs.readFile(path.normalize(__dirname + '/../pibakery-blocks/info.json'), 'utf8', function (error, blockInfo) {
-    fs.stat(path.normalize(__dirname + '/../pibakery-blocks/categories.json'), function (error) {
+    // new block loader - updatable categories
+    fs.readFile(path.normalize(__dirname + '/../pibakery-blocks/categories.json'), 'utf8', function (error, categoryInfo) {
+      // if we can use custom categories
       if (error) {
-        // old block loader, load in the old way
-        var blocks = JSON.parse(blockInfo).loadOrder
-        for ( var x = 0; x < blocks.length; x++) {
-          var blockName = blocks[x]
-          var jsonPath = path.normalize(__dirname + '/../pibakery-blocks/' + blockName + '/' + blockName + '.json')
-          fs.readFile(jsonPath, 'utf8', function (error, data) {
-            if (error) {
-              console.error(error)
-              alert("Error loading block '" + blockName + "'.\nIf this error persists, please reinstall PiBakery.")
-            }else {
-              importBlock(data)
-            }
-          })
-        }
+        console.error(error)
+        alert('Not able to load blocks.\nIf this error persists, please reinstall PiBakery.')
       }else {
-        // new block loader - updatable categories
-        fs.readFile(path.normalize(__dirname + '/../pibakery-blocks/categories.json'), 'utf8', function (error, categoryInfo) {
-          // if we can use custom categories
-          if (error) {
-            console.error(error)
-            alert('Not able to load blocks.\nIf this error persists, please reinstall PiBakery.')
-          }else {
-            var categories = JSON.parse(categoryInfo).categories
-            var blocks = JSON.parse(blockInfo).loadOrder
+        var categories = JSON.parse(categoryInfo).categories
+        var blocks = JSON.parse(blockInfo).loadOrder
 
-            // delete the default categories
-            var currentCategories = document.getElementById('toolbox').children
-            for ( var x = currentCategories.length - 1; x != 0; x--) {
-              if (currentCategories[x].id != 'hat') {
-                currentCategories[x].parentNode.removeChild(currentCategories[x])
-              }
-            }
-
-            var categoryTypeText = ['hat']
-            var categoryTypeColour = [20]
-
-            // add the custom categories
-            for ( var x = 0; x < categories.length; x++) {
-              categoryTypeText.push(categories[x].name)
-              categoryTypeColour.push(categories[x].colour)
-              var newCategory = document.createElement('category')
-              newCategory.setAttribute('name', categories[x].display)
-              newCategory.setAttribute('colour', categories[x].colour)
-              newCategory.setAttribute('id', categories[x].name)
-              document.getElementById('toolbox').appendChild(newCategory)
-            }
-            asyncLoadBlocks(blocks, categoryTypeText, categoryTypeColour, 0)
+        // delete the default categories
+        var currentCategories = document.getElementById('toolbox').children
+        for ( var x = currentCategories.length - 1; x != 0; x--) {
+          if (currentCategories[x].id != 'hat') {
+            currentCategories[x].parentNode.removeChild(currentCategories[x])
           }
-        })
+        }
+
+        // add the custom categories
+        for ( var x = 0; x < categories.length; x++) {
+          categoryTypeText.push(categories[x].name)
+          categoryTypeColour.push(categories[x].colour)
+          var newCategory = document.createElement('category')
+          newCategory.setAttribute('name', categories[x].display)
+          newCategory.setAttribute('colour', categories[x].colour)
+          newCategory.setAttribute('id', categories[x].name)
+          document.getElementById('toolbox').appendChild(newCategory)
+        }
+
+        //asyncLoadBlocks(blocks, categoryTypeText, categoryTypeColour, 0)
+        asyncLoadBlocks(blocks, 0)
       }
     })
   })
@@ -2090,7 +2072,8 @@ function loadBlocks () {
   * @param integer x - the current repetition
   * @return null
 */
-function asyncLoadBlocks(blocks, categoryTypeText, categoryTypeColour, x) {
+//function asyncLoadBlocks(blocks, categoryTypeText, categoryTypeColour, x) {
+function asyncLoadBlocks(blocks, x) {
   if (x == blocks.length) {
     return
   }
@@ -2102,7 +2085,7 @@ function asyncLoadBlocks(blocks, categoryTypeText, categoryTypeColour, x) {
       alert("Error loading block '" + blockName + "'.\nIf this error persists, please reinstall PiBakery.")
     }else {
       importBlock(data, categoryTypeText, categoryTypeColour)
-      asyncLoadBlocks(blocks, categoryTypeText, categoryTypeColour, x+1)
+      asyncLoadBlocks(blocks, x+1)
     }
   })
 }
@@ -2386,6 +2369,11 @@ document.body.ondrop = (ev) => {
 
 function importTestBlock (filepath) {
   fs.stat(filepath, function (error, stats) {
+    if (error) {
+      alert("Block import error, can't find folder: " + error)
+      console.error(error)
+      return
+    }
     if (stats.isDirectory()) {
       if (process.platform == 'win32') {
         var folderName = filepath.split('\\').slice(-1)[0]
@@ -2395,14 +2383,22 @@ function importTestBlock (filepath) {
         var jsonFile = path.normalize(filepath + '/' + folderName + '.json')
       }
       fs.stat(jsonFile, function (error, stats) {
-        if (! error) {
+        if (error) {
+          alert("Block import error, can't find JSON file: " + error)
+          console.error(error)
+        }
+        else {
           if (process.platform == 'win32') {
             var blocksFolder = '\\..\\pibakery-blocks\\'
           }else {
             var blocksFolder = '/../pibakery-blocks/'
           }
           fs.stat(path.normalize(__dirname + blocksFolder + folderName), function (error, stats) {
-            if (!error) {
+            if (error) {
+              alert("Block import error: " + error)
+              console.error(error)
+            }
+            else {
               var choice = dialog.showMessageBox(
                 {
                   type: 'question',
@@ -2419,8 +2415,8 @@ function importTestBlock (filepath) {
             tempBlocks.push([folderName, filepath])
             fs.readFile(jsonFile, 'utf8', function (error, data) {
               if (error) {
+                alert("Block import error, can't read JSON file: " + error)
                 console.error(error)
-                alert("Error loading block '" + folderName + "'.")
               }else {
                 importBlock(data)
                 workspace.updateToolbox(document.getElementById('toolbox'))
