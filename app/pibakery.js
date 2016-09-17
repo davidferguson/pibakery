@@ -2394,7 +2394,6 @@ function importTestBlock (filepath) {
           }
           fs.stat(path.normalize(__dirname + blocksFolder + folderName), function (error, stats) {
             if (error) {
-              alert("Block import error: " + error)
               console.error(error)
             }
             else {
