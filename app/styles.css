@@ -143,7 +143,7 @@ body
 #sdSelector
 {
   width: 250px;
-  height: 80px;
+  height: 100px;
   background-color: white;
   position: absolute;
   top: 50%;
@@ -153,10 +153,22 @@ body
   border-radius: 7px;
   text-align: center;
 }
+#selectionTable
+{
+  font-size: 13px;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
 #sdChoice
 {
-  width: 200px;
-  margin-top: 20px;
+  width: 110px;
+  float: right;
+}
+#osChoice
+{
+  width: 110px;
+  float: right;
 }
 #writeButton
 {
@@ -185,6 +197,11 @@ body
 {
   height: 10px;
   margin-top: -10px;
+}
+#writeDetailedProgress
+{
+  margin-top: 9px;
+  font-size: 11px;
 }
 #writeAnimation
 {
