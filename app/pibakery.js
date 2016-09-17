@@ -622,7 +622,6 @@ function extract7z (archive, outputdir, callback) {
 */
 //function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, newOsInfo, fixing, compressedFilename, uncompressedFilename, finalFilename, newOsVersion) {
 function updateRaspbian( osJsonInfo ) {
-  console.log(osJsonInfo)
   var src = osJsonInfo.downloadUrl
   var raspbian7zHash = osJsonInfo.compressedMD5
   var raspbianImgHash = osJsonInfo.uncompressedMD5
