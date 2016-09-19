@@ -13,6 +13,10 @@
 	"continue": true,
 	"type": "software",
 	"category":"software",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Install any package from the Raspbian repositories. Internet connection required.",
 	"longDescription":"This block is exactly the same as running apt-get install, and allows you to easily install any package from the Raspbian repositories. An internet connection will be required for this to work."
 }

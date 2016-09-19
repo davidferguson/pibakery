@@ -22,6 +22,10 @@
 	"continue": true,
 	"type": "network",
 	"category":"network",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Automatically connect to a WiFi network.",
 	"longDescription":"This block allows you to enter a WiFi network name and password, and then your Raspberry Pi will automatically connect to that network when it is first switched on. If you want to enter multiple network details (one for home and another for school), just use this block twice."
 }

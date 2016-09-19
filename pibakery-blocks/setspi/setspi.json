@@ -1,0 +1,21 @@
+{
+	"name": "setspi",
+	"text": "%1 automatic loading of SPI kernel module",
+	"script": "setspi.sh",
+	"args": [
+		{
+			"type": "menu",
+			"options": ["Enable", "Disable"]
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "setting",
+	"category":"setting",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Enable or disable automatic loading of SPI kernel module",
+	"longDescription":"The kernal SPI module is used for communication with some addon boards, such as PiFace. You can choose to have this automatically enabled on boot, or not, which is the default."
+}

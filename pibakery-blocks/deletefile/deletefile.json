@@ -13,6 +13,10 @@
 	"continue": true,
 	"type": "other",
 	"category":"other",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Delete a file or folder",
 	"longDescription":"If you so desire, you can choose to delete a file or folder from your Raspberry Pi. This block will not send the data to the recycle bin, rather it will delete it permanently. Please be careful when using this block."
 }

@@ -7,6 +7,10 @@
 	"continue": false,
 	"type": "other",
 	"category":"other",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Shuts down your Raspberry Pi",
 	"longDescription":"Exactly what it says on the block, this will shut down your Raspberry Pi."
 }

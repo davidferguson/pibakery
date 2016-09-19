@@ -1,12 +1,22 @@
 {
 	"name": "lampinstall",
-	"text": "Install Apache/PHP/MySQL\\nRequires internet connection",
+	"text": "Install Apache/PHP/MySQL\\nMySQL root password: %1\\nRequires internet connection",
 	"script": "lampInstall.sh",
-	"args": [],
+	"args": [
+		{
+			"type": "text",
+			"default": "mysql-password",
+			"maxLength":0
+		}
+	],
 	"network": true,
 	"continue": true,
 	"type": "software",
 	"category":"software",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Install a full web server on your Raspberry Pi. Requires internet connection.",
 	"longDescription":"Apache is a web server, and combined with PHP and MySQL it makes for a great way for beginners to experiment with web development, and also experienced users to easily run their websites. This downloads packages from the Raspbian repository, and therefore requires an internet connection."
 }

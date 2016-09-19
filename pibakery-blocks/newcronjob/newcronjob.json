@@ -1,0 +1,51 @@
+{
+	"name": "newcronjob",
+	"text": "Create new cron job\\nMinute:%1\\nHour:%2\\nDay of month:%3\\nMonth:%4\\nDay of week%5\\nCommand: %6\\nAs user: %7",
+	"script": "newcronjob.sh",
+	"args": [
+		{
+			"type": "text",
+			"default": "*",
+			"maxLength":1
+		},
+		{
+			"type": "text",
+			"default": "*",
+			"maxLength":2
+		},
+		{
+			"type": "text",
+			"default": "*",
+			"maxLength":2
+		},
+		{
+			"type": "text",
+			"default": "*",
+			"maxLength":2
+		},
+		{
+			"type": "text",
+			"default": "*",
+			"maxLength":2
+		},
+		{
+			"type": "text",
+			"default": "/home/pi/myscript.sh",
+			"maxLength":0
+		},
+		{
+			"type": "menu",
+			"options": ["pi", "root"]
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "setting",
+	"category":"setting",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Change the password for the default pi user",
+	"longDescription":"Raspbian comes with a user account already setup, with the username 'pi' and the password 'raspberry'. For the sake of security, you can choose to change your password to anything you want. If you don't change it now, you'll still be able to change it later."
+}

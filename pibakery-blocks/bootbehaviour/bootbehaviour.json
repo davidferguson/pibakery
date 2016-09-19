@@ -12,6 +12,9 @@
 	"continue": true,
 	"type": "setting",
 	"category":"setting",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img"
+	],
 	"shortDescription":"Alter what happens when you power on your Raspberry Pi. Requires reboot to take effect",
 	"longDescription":"When you power on you Raspberry Pi, you can choose what you want to happen. You can either have it open the Desktop or just the text console, and in both of these cases you can choose whether you want to have the Raspberry Pi automatically log in for you or not."
 }

@@ -7,6 +7,10 @@
 	"continue": true,
 	"type": "setting",
 	"category":"otg",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Disable the OTG mode on the Raspberry Pi Zero.",
 	"longDescription":"The Raspberry Pi Zero has the ability to support OTG gadget mode over it's DATA usb port. If you've enabled this feature using one of the OTG blocks, you can use this block to return the Pi Zero back to it's default behaviour of not having any gadget enabled."
 }

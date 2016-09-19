@@ -13,6 +13,9 @@
 	"continue": true,
 	"type": "software",
 	"category":"software",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img"
+	],
 	"shortDescription":"Run a VNC server on a designated port. This requires a VNC server to already be installed - use the Install VNC Server block.",
 	"longDescription":"By default, most VNC servers do not run on startup. Combined with the 'On Every Boot' block, this block allows you to run a VNC server on a designated port every time your Pi starts up. This block will only work if a VNC server is already installed, which you can use the 'Install VNC Server' block. If a port number less than 5901 is chosen, the port number used will be 5900 + the port you chose."
 }

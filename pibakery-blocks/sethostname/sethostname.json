@@ -5,7 +5,7 @@
 	"args": [
 		{
 			"type": "text",
-			"default": "raspberrypi.local",
+			"default": "raspberrypi",
 			"maxLength":0
 		}
 	],
@@ -13,6 +13,10 @@
 	"continue": true,
 	"type": "setting",
 	"category":"setting",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Change the full hostname of the Raspberry Pi",
 	"longDescription":"By default, the hostname of the Raspberry Pi is \"raspberry\". If you've got multiple Raspberry Pis, you'll want to set each of them to a unique name to avoid confusion, and you may want to change your hostname anyway."
 }

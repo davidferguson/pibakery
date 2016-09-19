@@ -7,6 +7,10 @@
 	"continue": true,
 	"type": "setting",
 	"category":"otg",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Set the Pi Zero to use Serial over OTG.",
 	"longDescription":"The Raspberry Pi Zero has the ability to support OTG gadget mode over it's DATA usb port. This block enables the Serial gadget, allowing your Raspberry Pi to appear as a USB serial device to a connected computer. Using Putty on Windows, or Terminal on Mac and Linux, you'll be able to connect and log in to the command line of your Pi, over USB."
 }

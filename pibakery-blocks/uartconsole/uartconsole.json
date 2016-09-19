@@ -1,0 +1,21 @@
+{
+	"name": "uartconsole",
+	"text": "%1 a login console over the GPIO serial",
+	"script": "uartconsole.sh",
+	"args": [
+		{
+			"type": "menu",
+			"options": ["Disable", "Enable"]
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "setting",
+	"category":"setting",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Enable or disable a login console over the GPIO UART RX/TX pins",
+	"longDescription":"The Raspberry Pi GPIO has a pin labelled RX and another labeled TX. Together they make up a serial connection you can use to communicate with other serial devices. By default, these pins are set to display a login console over the serial connectionm but if you want to use them with another serial device, you'll want to disable this."
+}

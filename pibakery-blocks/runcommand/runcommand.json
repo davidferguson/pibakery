@@ -17,6 +17,10 @@
 	"continue": true,
 	"type": "other",
 	"category":"other",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Run a command as either the user pi or the root user.",
 	"longDescription":"This block allows you to enter a command, which will be run on the command-line. You can choose for youc command to be run either as the normal 'pi' user, or for commands that require administrator rights, the 'root' user."
 }

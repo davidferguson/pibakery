@@ -13,6 +13,10 @@
 	"continue": true,
 	"type": "network",
 	"category":"otg",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Set the Pi Zero to use Ethernet over OTG, with a static IP address.",
 	"longDescription":"The Raspberry Pi Zero has the ability to support OTG gadget mode over it's DATA usb port. This block enables the Ethernet gadget, allowing your Raspberry Pi to be networked to a computer over USB. You need to specify an IP address for your Raspberr Pi, so that you'll be able to connect to it."
 }

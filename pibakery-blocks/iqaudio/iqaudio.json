@@ -1,0 +1,21 @@
+{
+	"name": "iqaudio",
+	"text": "Enable IQaudIO sound card\\n%1 Disable built-in audio card\\nRequires restart to take effect",
+	"script": "iqaudio.sh",
+	"args": [
+		{
+			"type": "check",
+			"default": true
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "software",
+	"category":"software",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Enable support for a IQaudIO sound card.",
+	"longDescription":"IQaudIO make and sell several high quality audio cards for Raspberry Pi - this block enables them and gives you the option of disabling the Raspberry Pi's built in audio card to prevent any confusion between the two."
+}

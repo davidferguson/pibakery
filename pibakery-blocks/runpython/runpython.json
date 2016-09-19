@@ -17,6 +17,10 @@
 	"continue": true,
 	"type": "other",
 	"category":"other",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Run a python script as either the user pi or the root user.",
 	"longDescription":"This block allows you to enter the full path of a Python script, and that script will be run. The script can be run either as the normal 'pi' user, or for scripts that require administrator rights, the 'root' user."
 }

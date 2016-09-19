@@ -7,6 +7,10 @@
 	"continue": true,
 	"type": "setting",
 	"category":"otg",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Set the Pi Zero to use MIDI over OTG.",
 	"longDescription":"The Raspberry Pi Zero has the ability to support OTG gadget mode over it's DATA usb port. This block enables the MIDI gadget, allowing your Raspberry Pi to appear as a MIDI input and output to a connected computer. Use any standard MIDI program on the connected computer or Raspberry Pi Zero to play music between the Pi and computer."
 }

@@ -18,6 +18,10 @@
 	"continue": true,
 	"type": "network",
 	"category":"network",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Download a file from the internet to a location on your Raspberry Pi. This block requires an internet connection to work.",
 	"longDescription":"This block allows you to enter a remote URL of a file along with a save location, and it will download the file to that location. As this block will download the file from the internet, an internet connection is required to use this block."
 }

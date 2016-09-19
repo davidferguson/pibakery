@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function getUriFilename() {
-    header="$(curl -sI "$1" | tr -d '\r')"
+    header="$(curl -A 'PiBakery' -sI "$1" | tr -d '\r')"
 
     filename="$(echo "$header" | grep -o -E 'filename=.*$')"
     if [[ -n "$filename" ]]; then
@@ -22,7 +22,7 @@ if [ -d $2 ]
 then
   filename="$(getUriFilename $1)"
   echo $filename
-  curl -o "$2/$filename" "$1" -L
+  curl -A 'PiBakery' -o "$2/$filename" "$1" -L
 else
-  curl -o "$2" "$1" -L
+  curl -A 'PiBakery' -o "$2" "$1" -L
 fi

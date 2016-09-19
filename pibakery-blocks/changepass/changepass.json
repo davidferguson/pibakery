@@ -13,6 +13,10 @@
 	"continue": true,
 	"type": "setting",
 	"category":"setting",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Change the password for the default pi user",
 	"longDescription":"Raspbian comes with a user account already setup, with the username 'pi' and the password 'raspberry'. For the sake of security, you can choose to change your password to anything you want. If you don't change it now, you'll still be able to change it later."
 }

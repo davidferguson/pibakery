@@ -1,0 +1,12 @@
+{
+	"name": "packageupgrade",
+	"text": "Upgrade all installed packages\\nRequires internet connection.",
+	"script": "updateupgrade.sh",
+	"args": [],
+	"network": true,
+	"continue": true,
+	"type": "software",
+	"category":"software",
+	"shortDescription":"Upgrade all installed packages",
+	"longDescription":"This block is exactly the same as running sudo apt-get update and sudo apt-get -y upgrade, which upgrades all the packages you have installed on your Raspberry Pi. An internet connection will be required for this to work."
+}

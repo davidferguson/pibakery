@@ -1,0 +1,12 @@
+{
+	"name": "RetroPieSetup",
+	"text": "Install RetroPie\\nRequires internet connection",
+	"script": "RetroPieInstall.sh",
+	"args": [],
+	"network": true,
+	"continue": true,
+	"type": "software",
+	"category":"software",
+	"shortDescription":"Installs the RetroPie-Setup script. Internet connection required.",
+	"longDescription":"This block allows you to install and boot to the RetroPie-Setup script. An internet connection will be required for this to work."
+}

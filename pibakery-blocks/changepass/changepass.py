@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # Thanks to Filipe Pina on StackOverflow
 
 import subprocess,crypt,random, sys
