@@ -297,7 +297,7 @@ function checkForRaspbianUpdates (cb) {
       }
     }
 
-    request.get('https://gist.githubusercontent.com/davidferguson/249b28f3e41d6e9e69f8a5314320c913/raw/6b7e504f186c0f36c657eae0893bc6c6aeb8296b/images.json', function (error, response, body) {
+    request.get('https://raw.githubusercontent.com/davidferguson/pibakery-raspbian/master/images.json', function (error, response, body) {
       if (error) {
         console.error(error)
         return
