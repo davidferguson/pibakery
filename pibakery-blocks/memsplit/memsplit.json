@@ -1,0 +1,21 @@
+{
+	"name": "memsplit",
+	"text": "Set the GPU memory to %1\\nRequires restart to take effect",
+	"script": "memsplit.sh",
+	"network": false,
+	"continue": true,
+	"type": "setting",
+	"category": "setting",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Changes the GPU memory split. Requires reboot to take effect.",
+	"longDescription":"Set the memory split (the amount of memory used by the GPU.) For console-only systems, this value can be lowered to make more memory available, while GUI users may want to leave this or set it higher. Valid values include: 16/32/64/128/256. Requires reboot to take effect.",
+	"args": [
+		{
+			"type": "menu",
+			"options": ["16", "32", "64", "128", "256"]
+		}
+	]
+}

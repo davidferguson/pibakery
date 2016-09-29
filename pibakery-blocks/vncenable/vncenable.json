@@ -1,0 +1,20 @@
+{
+	"name": "vncenable",
+	"text": "%1 VNC Server at Boot",
+	"script": "vncenable.sh",
+	"args": [
+		{
+			"type": "menu",
+			"options": ["Enable", "Disable"]
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "software",
+	"category":"software",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img"
+	],
+	"shortDescription":"Enable or disable the built in VNC server.",
+	"longDescription":"By default, the built in VNC server does not run on startup. Using this block you can enable it, or disable it if you have already enabled it."
+}
