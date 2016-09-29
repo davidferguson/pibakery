@@ -90,35 +90,93 @@ function getOsPath () {
   * @return null
 */
 function initialise () {
-  fs.stat(path.normalize(__dirname + '/../pibakery-blocks/info.json'), function (error, stats) {
-    if (error) {
-      console.error(error)
-      fixBlocks()
-      return
-    }
-    document.getElementById('blockly_editor').style.display = 'block'
-    document.getElementsByClassName('spinner')[0].style.display = 'none'
-    document.getElementById('credits').style.display = 'none'
-    workspace = Blockly.inject('blockly_editor', {toolbox: document.getElementById('toolbox')})
-    workspace.addChangeListener(validateBlocks)
-    loadBlocks()
-    document.getElementById('flashSD').addEventListener('click', writeToSd)
-    document.getElementById('importRecipe').addEventListener('click', importRecipe)
-    document.getElementById('exportRecipe').addEventListener('click', exportRecipe)
-    checkForRaspbianUpdates(function () {
-      checkForBlockUpdates()
-    })
-    // implement copy and paste in Blockly
-    ipcRenderer.on('paste', function (event, clipboard) {
-      document.getElementsByClassName('blocklyHtmlInput')[0].value = clipboard
-    })
-    ipcRenderer.on('testBlock', function (event) {
-      importTestBlock(dialog.showOpenDialog({properties: ['openDirectory']})[0])
+  checkInstalledOperatingSystsms(function () {
+    fs.stat(path.normalize(__dirname + '/../pibakery-blocks/info.json'), function (error, stats) {
+      if (error) {
+        console.error(error)
+        fixBlocks()
+        return
+      }
+      document.getElementById('blockly_editor').style.display = 'block'
+      document.getElementsByClassName('spinner')[0].style.display = 'none'
+      document.getElementById('credits').style.display = 'none'
+      workspace = Blockly.inject('blockly_editor', {toolbox: document.getElementById('toolbox')})
+      workspace.addChangeListener(validateBlocks)
+      loadBlocks()
+      document.getElementById('flashSD').addEventListener('click', writeToSd)
+      document.getElementById('importRecipe').addEventListener('click', importRecipe)
+      document.getElementById('exportRecipe').addEventListener('click', exportRecipe)
+      checkForRaspbianUpdates(function () {
+        checkForBlockUpdates()
+      })
+      // implement copy and paste in Blockly
+      ipcRenderer.on('paste', function (event, clipboard) {
+        document.getElementsByClassName('blocklyHtmlInput')[0].value = clipboard
+      })
+      ipcRenderer.on('testBlock', function (event) {
+        importTestBlock(dialog.showOpenDialog({properties: ['openDirectory']})[0])
+      })
     })
   })
 }
 
 initialise()
+
+/**
+  * @desc called by initialise, checks to see which operating systems in
+  * images.json are installed, and writes that back to images.json
+  * @param function cb - callback
+  * @return null
+*/
+function checkInstalledOperatingSystsms (cb) {
+  fs.readFile(path.normalize(getOsPath() + 'images.json'), 'utf8', function (error, data) {
+    if (error) {
+      alert('Internal PiBakery Error: ' + error)
+      console.error(error)
+      return
+    }
+    data = JSON.parse(data)
+    var length = data.length
+    var processed = 0
+    for (var i = 0; i < data.length; i++) {
+      checkOs(data, i, function () {
+        processed++
+        if (processed == length) {
+          data = JSON.stringify(data)
+          fs.writeFile(path.normalize(getOsPath() + 'images.json'), data, function (error) {
+            if (error) {
+              alert('Internal PiBakery Error: ' + error)
+              console.error(error)
+              return
+            }
+            cb()
+          })
+        }
+      })
+    }
+  })
+}
+
+/**
+  * @desc called by checkInstalledOperatingSystsms, checks to see if a single os
+  * is installed and modifies the installed key accordingly.
+  * @param object data - the data extracted from images.json, changes depending
+  * on whether the OS is installed or not
+  * @param number i - the current index we are processing
+  * @param function cb - callback
+  * @return null
+*/
+function checkOs (data, i, cb) {
+  var filepath = data[i].filename
+  fs.stat(path.normalize(getOsPath() + filepath), function (error, stat) {
+    if (error) {
+      data[i].installed = false
+    } else {
+      data[i].installed = true
+    }
+    cb()
+  })
+}
 
 /**
   * @desc redownloads the blocks if they hasn't been found by initialise()
@@ -290,7 +348,7 @@ function checkForRaspbianUpdates (cb) {
     var localImagesJson = JSON.parse(data)
     var installedImages = []
     var installedImagesIndexes = []
-    for (var i=0; i<localImagesJson.length; i++) {
+    for (var i = 0; i < localImagesJson.length; i++) {
       if (localImagesJson[i].installed) {
         installedImages.push(localImagesJson[i].filename)
         installedImagesIndexes.push(i)
@@ -304,7 +362,7 @@ function checkForRaspbianUpdates (cb) {
       }
       if (response.statusCode == 200) {
         var images = JSON.parse(body)
-        for (var i=0; i<images.length; i++) {
+        for (var i = 0; i < images.length; i++) {
           var newOsVersion = images[i].version
           var newOsFilename = images[i].filename
           var index = installedImages.indexOf(newOsFilename)
@@ -324,9 +382,9 @@ function checkForRaspbianUpdates (cb) {
             })
             if (choice == 0) {
               updateRaspbian(images[i])
-              //updateRaspbian(downloadUrl, compressedHash, uncompressedHash, uncompressedSize, body, 0, compressedFilename, uncompressedFilename, newOsFilename, newOsVersion)
+            // updateRaspbian(downloadUrl, compressedHash, uncompressedHash, uncompressedSize, body, 0, compressedFilename, uncompressedFilename, newOsFilename, newOsVersion)
             } else if (choice == 2) {
-              localImagesJson[index].skipVersion = newOsVersion;
+              localImagesJson[index].skipVersion = newOsVersion
               data = JSON.stringify(localImagesJson)
               fs.writeFile(path.normalize(getOsPath() + 'images.json'), data, function (error) {
                 if (error) {
@@ -335,7 +393,7 @@ function checkForRaspbianUpdates (cb) {
               })
             }
             break
-          }else if ((i+1)==images.length){
+          }else if ((i + 1) == images.length) {
             cb()
           }
         }
@@ -620,8 +678,8 @@ function extract7z (archive, outputdir, callback) {
   * will extract to
   * @return null
 */
-//function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, newOsInfo, fixing, compressedFilename, uncompressedFilename, finalFilename, newOsVersion) {
-function updateRaspbian( osJsonInfo ) {
+// function updateRaspbian (src, raspbian7zHash, raspbianImgHash, extractedSize, newOsInfo, fixing, compressedFilename, uncompressedFilename, finalFilename, newOsVersion) {
+function updateRaspbian (osJsonInfo) {
   var src = osJsonInfo.downloadUrl
   var raspbian7zHash = osJsonInfo.compressedMD5
   var raspbianImgHash = osJsonInfo.uncompressedMD5
@@ -737,7 +795,7 @@ function updateRaspbian( osJsonInfo ) {
                                       return
                                     }
                                     data = JSON.parse(data)
-                                    for (var i=0; i<data.length; i++) {
+                                    for (var i = 0; i < data.length; i++) {
                                       if (data[i].filename == finalFilename) {
                                         data[i].version = newOsVersion
                                       }
@@ -1880,13 +1938,13 @@ function createSdChooser (callback) {
 
       var osSelector = document.createElement('select')
       osSelector.setAttribute('id', 'osChoice')
-      osSelector.addEventListener("change", function() {
+      osSelector.addEventListener('change', function () {
         var chosenOperatingSystem = document.getElementById('osChoice').options[document.getElementById('osChoice').selectedIndex].value
         var chosenOperatingSystemName = document.getElementById('osChoice').options[document.getElementById('osChoice').selectedIndex].innerHTML
         var blocksRequired = generateScript()[3]
         var compatible = true
         var message = 'Some of the blocks you are using are not fully compatible with ' + chosenOperatingSystemName + ':\n'
-        for (var i=0; i<blocksRequired.length; i++) {
+        for (var i = 0; i < blocksRequired.length; i++) {
           if (blockSupportedOs[blocksRequired[i]].indexOf(chosenOperatingSystem) == -1) {
             compatible = false
             message = message + '\n' + blocksRequired[i]
@@ -1922,8 +1980,8 @@ function createSdChooser (callback) {
       closeButton.innerHTML = 'Close'
       closeButton.addEventListener('click', hiderClear)
 
-      //selectionDiv.appendChild(sdSelector)
-      //selectionDiv.appendChild(osSelector)
+      // selectionDiv.appendChild(sdSelector)
+      // selectionDiv.appendChild(osSelector)
 
       var selectionTable = document.createElement('table')
       selectionTable.setAttribute('id', 'selectionTable')
@@ -1950,7 +2008,6 @@ function createSdChooser (callback) {
       var osSelectColumn = document.createElement('td')
       osRow.appendChild(osSelectColumn)
       osSelectColumn.appendChild(osSelector)
-
 
       selectionDiv.appendChild(selectionTable)
       selectionDiv.appendChild(closeButton)
@@ -2002,7 +2059,7 @@ function createSdChooser (callback) {
   })
 }
 
-function getOsList(cb) {
+function getOsList (cb) {
   fs.readFile(path.normalize(getOsPath() + 'images.json'), 'utf8', function (error, data) {
     if (error) {
       console.error(error)
@@ -2010,7 +2067,7 @@ function getOsList(cb) {
     }
     var localImagesJson = JSON.parse(data)
     var installedImages = []
-    for (var i=0; i<localImagesJson.length; i++) {
+    for (var i = 0; i < localImagesJson.length; i++) {
       if (localImagesJson[i].installed) {
         installedImages.push(localImagesJson[i])
       }
@@ -2055,7 +2112,7 @@ function loadBlocks () {
           document.getElementById('toolbox').appendChild(newCategory)
         }
 
-        //asyncLoadBlocks(blocks, categoryTypeText, categoryTypeColour, 0)
+        // asyncLoadBlocks(blocks, categoryTypeText, categoryTypeColour, 0)
         asyncLoadBlocks(blocks, 0)
       }
     })
@@ -2071,8 +2128,8 @@ function loadBlocks () {
   * @param integer x - the current repetition
   * @return null
 */
-//function asyncLoadBlocks(blocks, categoryTypeText, categoryTypeColour, x) {
-function asyncLoadBlocks(blocks, x) {
+// function asyncLoadBlocks(blocks, categoryTypeText, categoryTypeColour, x) {
+function asyncLoadBlocks (blocks, x) {
   if (x == blocks.length) {
     return
   }
@@ -2084,7 +2141,7 @@ function asyncLoadBlocks(blocks, x) {
       alert("Error loading block '" + blockName + "'.\nIf this error persists, please reinstall PiBakery.")
     }else {
       importBlock(data, categoryTypeText, categoryTypeColour)
-      asyncLoadBlocks(blocks, x+1)
+      asyncLoadBlocks(blocks, x + 1)
     }
   })
 }
@@ -2385,8 +2442,7 @@ function importTestBlock (filepath) {
         if (error) {
           alert("Block import error, can't find JSON file: " + error)
           console.error(error)
-        }
-        else {
+        }else {
           if (process.platform == 'win32') {
             var blocksFolder = '\\..\\pibakery-blocks\\'
           }else {
@@ -2395,8 +2451,7 @@ function importTestBlock (filepath) {
           fs.stat(path.normalize(__dirname + blocksFolder + folderName), function (error, stats) {
             if (error) {
               console.error(error)
-            }
-            else {
+            }else {
               var choice = dialog.showMessageBox(
                 {
                   type: 'question',
