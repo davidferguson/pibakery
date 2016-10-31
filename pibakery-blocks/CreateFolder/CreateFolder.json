@@ -1,6 +1,6 @@
 {
 	"name": "CreateFolder",
-	"text": "Delete file/folder %1",
+	"text": "Create a folder %1",
 	"script": "CreateFolder.sh",
 	"args": [
 		{
