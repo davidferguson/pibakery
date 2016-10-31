@@ -29,7 +29,6 @@
     "reboot",
     "shutdown",
     "CreateFolder",
-    "wifisetup2",
     "updateupgrade",
     "IPChange"
   ]
