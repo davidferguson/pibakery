@@ -4,6 +4,8 @@ import sys, os, time
 
 openWifi = """
 
+country=WIFI-RD
+
 network={
     ssid="WIFI-SSID"
     scan_ssid=1
@@ -11,6 +13,8 @@ network={
 }"""
 
 wepWifi = """
+
+country=WIFI-RD
 
 network={
     ssid="WIFI-SSID"
@@ -20,6 +24,8 @@ network={
 }"""
 
 wpaWifi = """
+
+country=WIFI-RD
 
 network={
     ssid="WIFI-SSID"
@@ -35,11 +41,11 @@ wifiRD = sys.argv[4]
 
 if wifiSSID != "" and wifiType != "":
 	if wifiPSK == "" or wifiType == "Open (no password)":
-		wifiText = openWifi.replace("WIFI-SSID", wifiSSID)
+		wifiText = openWifi.replace("WIFI-SSID", wifiSSID).replace("WIFI-RD", wifiRD)
 	elif wifiType == "WEP":
-		wifiText = wepWifi.replace("WIFI-SSID", wifiSSID).replace("WIFI-PSK", wifiPSK)
+		wifiText = wepWifi.replace("WIFI-SSID", wifiSSID).replace("WIFI-PSK", wifiPSK).replace("WIFI-RD", wifiRD)
 	elif wifiType == "WPA/WPA2":
-		wifiText = wpaWifi.replace("WIFI-SSID", wifiSSID).replace("WIFI-PSK", wifiPSK)
+		wifiText = wpaWifi.replace("WIFI-SSID", wifiSSID).replace("WIFI-PSK", wifiPSK).replace("WIFI-RD", wifiRD)
 
 with open("/etc/wpa_supplicant/wpa_supplicant.conf", "a") as wifiFile:
 	wifiFile.write(wifiText)
