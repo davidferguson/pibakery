@@ -4,8 +4,6 @@ import sys, os, time
 
 openWifi = """
 
-country=WIFI-RD
-
 network={
     ssid="WIFI-SSID"
     scan_ssid=1
@@ -13,8 +11,6 @@ network={
 }"""
 
 wepWifi = """
-
-country=WIFI-RD
 
 network={
     ssid="WIFI-SSID"
@@ -24,8 +20,6 @@ network={
 }"""
 
 wpaWifi = """
-
-country=WIFI-RD
 
 network={
     ssid="WIFI-SSID"
@@ -38,15 +32,15 @@ wifiSSID = sys.argv[1]
 wifiPSK = sys.argv[2]
 wifiType = sys.argv[3]
 wifiRD = sys.argv[4]
+os.system("sed -i 's/country=GB/country=US" + wifiRD + "/' /etc/wpa_supplicant/wpa_supplicant.conf")
 
 if wifiSSID != "" and wifiType != "":
 	if wifiPSK == "" or wifiType == "Open (no password)":
-		wifiText = openWifi.replace("WIFI-SSID", wifiSSID).replace("WIFI-RD", wifiRD)
+		wifiText = openWifi.replace("WIFI-SSID", wifiSSID)
 	elif wifiType == "WEP":
-		wifiText = wepWifi.replace("WIFI-SSID", wifiSSID).replace("WIFI-PSK", wifiPSK).replace("WIFI-RD", wifiRD)
+		wifiText = wepWifi.replace("WIFI-SSID", wifiSSID).replace("WIFI-PSK", wifiPSK)
 	elif wifiType == "WPA/WPA2":
-		wifiText = wpaWifi.replace("WIFI-SSID", wifiSSID).replace("WIFI-PSK", wifiPSK).replace("WIFI-RD", wifiRD)
-
+		wifiText = wpaWifi.replace("WIFI-SSID", wifiSSID).replace("WIFI-PSK", wifiPSK)		
 with open("/etc/wpa_supplicant/wpa_supplicant.conf", "a") as wifiFile:
 	wifiFile.write(wifiText)
 os.system("sudo iw reg set " + wifiRD)
