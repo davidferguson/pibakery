@@ -1,2 +1,6 @@
 #!/bin/bash
-mkdir "$1"
+if [ $2 == "root" ]; then
+  su - root -c mkdir "$1"
+else
+  su - pi -c mkdir "$1"
+fi
