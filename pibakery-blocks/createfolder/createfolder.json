@@ -1,12 +1,16 @@
 {
 	"name": "CreateFolder",
-	"text": "Create a folder %1",
+	"text": "Create a folder %1\\nAs user: %2",
 	"script": "createfolder.sh",
 	"args": [
 		{
 			"type": "text",
 			"default": "/home/pi/Documents/NewFolder",
 			"maxLength":0
+		},
+		{
+			"type": "menu",
+			"options": ["pi", "root"]
 		}
 	],
 	"network": false,
