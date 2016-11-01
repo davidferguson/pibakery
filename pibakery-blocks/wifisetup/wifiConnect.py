@@ -32,7 +32,7 @@ wifiSSID = sys.argv[1]
 wifiPSK = sys.argv[2]
 wifiType = sys.argv[3]
 wifiRD = sys.argv[4]
-os.system("sed -i 's/country=GB/country=US" + wifiRD + "/' /etc/wpa_supplicant/wpa_supplicant.conf")
+os.system("sed -i 's/country=GB/country=" + wifiRD + "/' /etc/wpa_supplicant/wpa_supplicant.conf")
 
 if wifiSSID != "" and wifiType != "":
 	if wifiPSK == "" or wifiType == "Open (no password)":
