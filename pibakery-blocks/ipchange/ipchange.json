@@ -1,0 +1,36 @@
+{
+	"name": "ipchange",
+	"text": "Setup Fixed IP\\nNetwork: %1\\nIP Address: %2\\nGateway: %3\\nDNS: %4",
+	"script": "ipchange.py",
+	"args": [
+		{
+			"type": "menu",
+			"options": ["eth0", "wlan0", "wlan1"]
+		},
+		{
+			"type": "text",
+			"default": "192.168.0.55/24",
+			"maxLength":0
+		},
+		{
+			"type": "text",
+			"default": "192.168.0.254",
+			"maxLength":0
+		},
+		{
+			"type": "text",
+			"default": "192.168.0.254",
+			"maxLength":0
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "network",
+	"category":"network",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Automatically Change to a Fixed IP.",
+	"longDescription":"This block allows you to enter a Fixed IP for your network. If you want to enter multiple Fixed IP address for eth0 and wlan0, just use this block more than once."
+}
