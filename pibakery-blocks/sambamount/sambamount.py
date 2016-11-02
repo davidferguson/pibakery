@@ -16,7 +16,7 @@ SMBText = SMBSERVER + " " + SMBLOCAL + " cifs username=" + SMBUSERNAME + ",passw
 if SMBDOMMAIN != "":
 SMBText = SMBText + ",domain=" + SMBDOMMAIN
 
-SMBText = SMBText + ",file_mode=" + SMBFILE + ",dir_mode=" + SMBDIR + ",users,x-systemd.automount, noauto,user_xattr 0 0"
+SMBText = SMBText + ",file_mode=" + SMBFILE + ",dir_mode=" + SMBDIR + ",users,x-systemd.automount,noauto,user_xattr 0 0"
 with open("/etc/fstab", "a") as fstabFile:
 	fstabFile.write(SMBText)
 
