@@ -1,0 +1,50 @@
+{
+	"name": "sambamount",
+	"text": "Add SAMBA Share\\nFolder Path: %1\\nLocal Path: %2\\nUsername: %3\\nPassword: %4\\nDomain: %5\\nFile Mode: %6\\nDir Mode: %7\\n",
+	"script": "sambamount.py",
+	"args": [
+		{
+			"type": "text",
+			"default": "//server/public",
+			"maxLength":0
+		},
+		{
+			"type": "text",
+			"default": "/home/pi/NetworkPublic",
+			"maxLength":0
+		},
+		{
+			"type": "text",
+			"default": "username",
+			"maxLength":0
+		},
+		{
+			"type": "text",
+			"default": "password",
+			"maxLength":0
+		},
+		{
+			"type": "text",
+			"default": "DOMAIN.LOCAL",
+			"maxLength":0
+		},
+		{
+			"type": "menu",
+			"options": ["0777", "0664"]
+		},
+		{
+			"type": "menu",
+			"options": ["0777","0775"]
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "network",
+	"category":"network",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Automatically connect to SAMBA network Share.",
+	"longDescription":"This block allows you to enter a SAMBA network share, and then your Raspberry Pi will automatically connect to that network share when it is first switched on. If you want to enter multiple sahred folders, just use this block twice."
+}
