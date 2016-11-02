@@ -1,6 +1,6 @@
 {
 	"name": "setaudio",
-	"text": "Set Audio Mode\\nAudio Mode: %1",
+	"text": "Audio Mode: %1",
 	"script": "setaudio.py",
 	"args": [
 		{
