@@ -27,8 +27,6 @@
     "runpython",
     "deletefile",
     "reboot",
-    "shutdown",
-    "CreateFolder",
-    "IPChange"
+    "shutdown"
   ]
 }
