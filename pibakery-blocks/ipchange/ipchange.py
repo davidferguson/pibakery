@@ -32,7 +32,7 @@ newGW = sys.argv[3]
 newDNS = sys.argv[4]
 
 if newIP != "":
-	if netType == "Lan":
+	if netType == "eth0":
 		ipText = Lantxt.replace("myip", newIP).replace("mygw", newGW).replace("mydns", newDNS)
 	elif netType == "wlan0":
 		ipText = WLantxt0.replace("myip", newIP).replace("mygw", newGW).replace("mydns", newDNS)
