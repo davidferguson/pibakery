@@ -1,6 +1,6 @@
 {
 	"name": "setdisplay",
-	"text": "Set Display Mode\\nDisplay Mode: %1",
+	"text": "Display Mode: %1",
 	"script": "setdisplay.py",
 	"args": [
 		{
