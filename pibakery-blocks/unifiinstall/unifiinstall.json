@@ -1,0 +1,16 @@
+{
+	"name": "unifiinstall",
+	"text": "Install Unifi Managment\\nRequires internet connection",
+	"script": "unifiinstall.sh",
+	"args": [],
+	"network": true,
+	"continue": true,
+	"type": "software",
+	"category":"software",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Installs the Unifi Managment Software. Internet connection required.",
+	"longDescription":"This block allows you to install Unifi Managment Software. An internet connection will be required for this to work."
+}
