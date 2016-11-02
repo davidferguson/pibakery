@@ -13,7 +13,7 @@ SMBDIR = sys.argv[7]
 os.system('sudo -u pi mkdir "' + SMBLOCAL + '"')
 
 SMBText = SMBSERVER + " " + SMBLOCAL + "cifs username=" + SMBUSERNAME + ",password=" + SMBPASSWORD
-if SMBDOMMAIN != ""
+if SMBDOMMAIN != "":
 SMBText = SMBText + ",domain=" + SMBDOMMAIN
 
 SMBText = SMBText + ",file_mode=" + SMBFILE + ",dir_mode=" + SMBDIR + ",users,auto,user_xattr 0 0"
