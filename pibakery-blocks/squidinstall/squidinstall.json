@@ -1,0 +1,32 @@
+{
+	"name": "squidinstall",
+	"text": "Install Squid Proxy Server\\nAllow Range:\\nIP: %1\\nSubnet: %2\\nPort: %3\\nRequires internet connection",
+	"script": "squidInstall.sh",
+	"args": [
+		{
+			"type": "text",
+			"default": "192.168.1.0",
+			"maxLength":0
+		},
+		{
+			"type": "text",
+			"default": "255.255.255.0",
+			"maxLength":0
+		},
+		{
+			"type": "text",
+			"default": "3128",
+			"maxLength":0
+		}
+	],
+	"network": true,
+	"continue": true,
+	"type": "software",
+	"category":"software",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Install Squid Proxy Server and set the allowed IP range. Internet connection required.",
+	"longDescription":"This block runs apt-get install and edits the squid config file with perl via a bash script. An internet connection will be required for this to work."
+}
