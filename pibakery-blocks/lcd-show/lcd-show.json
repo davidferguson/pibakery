@@ -1,0 +1,25 @@
+{
+	"name": "lcd-show",
+	"text": "Screen: %1\\nRotation: %2",
+	"script": "lcd-show.py",
+	"args": [
+		{
+			"type": "menu",
+			"options": ["LCD35","LCD4-800x480","LCD4","LCD5","LCD7-800x480","LCD7-1024x600","LCD28","LCD32","LCD35B","LCD43","LCD101-1024x600"]
+		},
+		{
+			"type": "menu",
+			"options": ["0", "90", "180", "270"]
+		}
+	],
+	"network": true,
+	"continue": true,
+	"type": "setting",
+	"category":"setting",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Sets the Raspberry pi to work with LCD screens.",
+	"longDescription":"Sets the Raspberry pi to work with LCD screens. starts working after reboot"
+}
