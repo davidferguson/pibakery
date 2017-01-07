@@ -1,0 +1,29 @@
+{
+	"name": "hifiberry",
+	"text": "Enable HifiBerry sound card\\nType: %1\\n%2 Disable built-in audio card\\n%3 Configure ALSA\\nRequires restart to take effect",
+	"script": "hifiberry.sh",
+	"args": [
+		{
+			"type": "menu",
+			"options": ["DAC", "DAC+", "Digi/Digi+", "AMP+"]
+		},
+		{
+			"type": "check",
+			"default": true
+		},
+		{
+			"type": "check",
+			"default": true
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "hardware",
+	"category":"hardware",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Enable support for a HifiBerry sound card.",
+	"longDescription":"HifiBerry make and sell several high quality audio cards for Raspberry Pi - this block enables them and gives you the option of disabling the Raspberry Pi's built in audio card to prevent any confusion between the two."
+}

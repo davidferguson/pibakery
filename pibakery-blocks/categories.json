@@ -11,6 +11,11 @@
       "colour": "260"
     },
     {
+      "name": "hardware",
+      "display": "Drivers",
+      "colour": "60"
+    },
+    {
       "name": "setting",
       "display": "Settings",
       "colour": "210"

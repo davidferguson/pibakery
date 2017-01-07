@@ -10,8 +10,8 @@
 	],
 	"network": false,
 	"continue": true,
-	"type": "software",
-	"category":"software",
+	"type": "hardware",
+	"category":"hardware",
 	"supportedOperatingSystems": [
 		"raspbian-pibakery.img",
 		"raspbian-lite-pibakery.img"
