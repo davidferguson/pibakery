@@ -1,7 +1,7 @@
 {
   "name": "PiBakery",
   "displayName": "PiBakery",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "The blocks based, easy to use setup tool for Raspberry Pi",
   "main": "./main.js",
   "author": "David Ferguson <david@pibakery.org>",
