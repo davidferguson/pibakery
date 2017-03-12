@@ -1792,9 +1792,11 @@ function getDriveListWin (callback) {
 
       for ( var x = 0; x < disks.length; x++) {
         for ( var y = 0; y < drives.length; y++) {
-          if (drives[y].Caption == disks[x].mountpoint) {
+          // if (drives[y].Caption == disks[x].mountpoint) {
+          if (drives[y].Caption == disks[x].mountpoints[0].path) {
             if ((! disks[x].system) && drives[y].DriveType == 2) {
-              names.push(disks[x].mountpoint + ' - ' + drives[y].VolumeName)
+              // names.push(disks[x].mountpoint + ' - ' + drives[y].VolumeName)
+              names.push(disks[x].mountpoints[0].path + ' - ' + drives[y].VolumeName)
               paths.push(disks[x].device)
             }
           }
@@ -1827,7 +1829,8 @@ function getDriveListNix (callback) {
           }
         }
 
-        getMountPoint(disks[i].device, disks[i].mountpoint, i, function (mntPoint, j) {
+        // getMountPoint(disks[i].device, disks[i].mountpoint, i, function (mntPoint, j) {
+        getMountPoint(disks[i].device, disks[i].mountpoints[0].path, i, function (mntPoint, j) {
           if ((!disks[j].system) && mntPoint) {
             // only add the device if it isn't already in the list, or if it is in the list but the current loop device name is shorter then overwrite the longer name
             if (paths.indexOf(disks[j].device) == -1) {
