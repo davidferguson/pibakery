@@ -1357,7 +1357,7 @@ function writeToSd () {
         type: 'question',
         buttons: ['Yes', 'No'],
         title: 'Confirm Write',
-        message: 'You have selected to write to "' + name + '".\nWriting will permanently erase any exisitng contents on "' + name + '"\nDo you wish to continue?'
+        message: 'You have selected to write to "' + name + '".\nWriting will permanently erase any existing contents on "' + name + '"\nDo you wish to continue?'
       })
 
     if (choice == 0) {
