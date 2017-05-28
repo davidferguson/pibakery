@@ -889,6 +889,10 @@ function getExtractedPath (callback, filepath, currentNumber) {
 
 var scanner = new drivelistScanner({interval: 1000})
 scanner.on('add', function (drives) {
+  if (drives.mountpoints.length === 0) {
+    return
+  }
+  console.log(drives)
   setTimeout(function () {
     if (! workspace) {
       var loadedInterval = setInterval(function () {
@@ -939,7 +943,7 @@ scanner.on('remove', function (drives) {
 */
 function importExisting (drives) {
   if ((drives.device) && (! drives.system) && (currentMode == 'write') && (Blockly.PiBakery.workspaceToCode(workspace) == '') && (! document.getElementById('hider')) && (drives.description != 'SuperDrive')) {
-    getMountPoint(drives.device, drives.mountpoint, 0, function (darwinMnt, __i) {
+    getMountPoint(drives.device, drives.mountpoints[0].path, 0, function (darwinMnt, __i) {
       if (process.platform == 'darwin' || process.platform == 'linux') {
         if (!darwinMnt) {
           return
@@ -947,7 +951,7 @@ function importExisting (drives) {
         piBakeryPath = path.normalize(darwinMnt + '/PiBakery/')
       }
       else if (process.platform == 'win32') {
-        piBakeryPath = path.normalize(drives.mountpoint + '\\PiBakery\\')
+        piBakeryPath = path.normalize(drives.mountpoints[0].path + '\\PiBakery\\')
       }
       var blockFile = piBakeryPath + 'blocks.xml'
       fs.readFile(blockFile, 'utf8', function (error, data) {
