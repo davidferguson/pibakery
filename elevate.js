@@ -36,15 +36,20 @@ exports.require = function(app, callback) {
 
     if (!elevated) {
 
-      if (platform === 'darwin') {
-
-        // Keep parent process hidden
-        app.dock.hide();
-
-        sudoPrompt.exec(process.argv.join(' '), {
-          name: packageJSON.displayName,
-          icns: path.normalize(__dirname + '/app/img/icon.icns')
-        }, function(error) {
+      // would like to use ['darwin','freebsd','linux'].includes(platform) unsure if node supports yet
+      if ((platform === 'darwin') || (platform === 'freebsd') || (platform === 'linux')) {
+        var sudoOpts = {
+          name: packageJSON.displayName
+        };
+        // Keep parent process hidden (Mac only)
+        try {
+          app.dock.hide();
+          sudoOpts['icns'] = path.normalize(__dirname + '/app/img/icon.icns');
+        } catch (e) {
+          // do nothing
+        }
+        
+        sudoPrompt.exec(process.argv.join(' '), sudoOpts, function(error) {
           if (error) {
             return callback(error);
           }
