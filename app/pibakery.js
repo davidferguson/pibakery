@@ -2162,8 +2162,8 @@ function asyncLoadBlocks (blocks, x) {
   * @return null
 */
 function importBlock (blockCode, typeText, typeColour) {
-  if (typeof typeText === 'undefined') { typeText = ['hat', 'software', 'network', 'setting', 'other']; }
-  if (typeof typeColour === 'undefined') { typeColour = [20, 120, 260, 210, 290]; }
+  if (typeof typeText === 'undefined') { typeText = ['hat', 'software', 'network', 'hardware', 'setting', 'other']; }
+  if (typeof typeColour === 'undefined') { typeColour = [20, 120, 260, 60, 210, 290]; }
   // var typeText = ['hat', 'software', 'network', 'setting', 'other']
   // var typeColour = [20, 120, 260, 210, 290]
 

@@ -8,8 +8,5 @@ fi
 
 if [ "$1" == "TRUE" ]
 then
-  if grep -qxF "dtparam=audio=on" "/boot/config.txt"
-  then
-    grep -v "dtparam=audio=on" "/boot/config.txt" > "/boot/config.txt2"; mv "/boot/config.txt2" "/boot/config.txt"
-  fi
+  sed 's/^dtparam=audio=on/#dtparam=audio=on/' -i /boot/config.txt
 fi
