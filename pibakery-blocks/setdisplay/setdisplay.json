@@ -1,0 +1,21 @@
+{
+	"name": "setdisplay",
+	"text": "Display Mode: %1",
+	"script": "setdisplay.py",
+	"args": [
+		{
+			"type": "menu",
+			"options": ["1024x768","720p","1080p","1440x900","1280x1024","1280x960","1280x800","800x600"]
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "setting",
+	"category":"setting",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Set Display mode of PI.",
+	"longDescription":"This block allows you to set the display mode of the PI, it also sets the force hotplug so it can be used headless."
+}

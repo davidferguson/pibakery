@@ -1,0 +1,26 @@
+{
+	"name": "CreateFolder",
+	"text": "Create a folder %1\\nAs user: %2",
+	"script": "createfolder.sh",
+	"args": [
+		{
+			"type": "text",
+			"default": "/home/pi/Documents/NewFolder",
+			"maxLength":0
+		},
+		{
+			"type": "menu",
+			"options": ["pi", "root"]
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "other",
+	"category":"other",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Create a folder",
+	"longDescription":"If you so desire, you can choose to create a folder from your Raspberry Pi."
+}
