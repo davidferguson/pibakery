@@ -31,6 +31,8 @@ network={
 wifiSSID = sys.argv[1]
 wifiPSK = sys.argv[2]
 wifiType = sys.argv[3]
+wifiRD = sys.argv[4]
+os.system("sed -i 's/country=GB/country=" + wifiRD + "/' /etc/wpa_supplicant/wpa_supplicant.conf")
 
 if wifiSSID != "" and wifiType != "":
 	if wifiPSK == "" or wifiType == "Open (no password)":
@@ -38,11 +40,11 @@ if wifiSSID != "" and wifiType != "":
 	elif wifiType == "WEP":
 		wifiText = wepWifi.replace("WIFI-SSID", wifiSSID).replace("WIFI-PSK", wifiPSK)
 	elif wifiType == "WPA/WPA2":
-		wifiText = wpaWifi.replace("WIFI-SSID", wifiSSID).replace("WIFI-PSK", wifiPSK)
-
+		wifiText = wpaWifi.replace("WIFI-SSID", wifiSSID).replace("WIFI-PSK", wifiPSK)		
 with open("/etc/wpa_supplicant/wpa_supplicant.conf", "a") as wifiFile:
 	wifiFile.write(wifiText)
-
+os.system("sudo iw reg set " + wifiRD)
+time.sleep(5)
 os.system("wpa_cli reconfigure")
 time.sleep(5)
 
