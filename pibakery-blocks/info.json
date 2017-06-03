@@ -5,6 +5,7 @@
   "loadOrder": [
     "vncenable",
     "packageinstall",
+    "squidinstall",
     "lampinstall",
     "iqaudio",
     "wifisetup",
