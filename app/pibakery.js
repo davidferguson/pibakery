@@ -970,7 +970,7 @@ function importExisting (drives) {
             Blockly.mainWorkspace.clear()
             var parser = new DOMParser()
             var xmlData = parser.parseFromString(data, 'text/xml')
-            var firstboot = xmlData.getElementsByTagName('firstboot')
+            var firstboot = xmlData.getElementsByTagName('firstboot')[0]
 
             firstBoot = (firstboot.innerText == '1')
 
@@ -1831,6 +1831,10 @@ function getDriveListNix (callback) {
           if (disks[i].description == 'SuperDrive') {
             continue
           }
+        }
+
+        if (disks[i].mountpoints.length == 0) {
+          continue
         }
 
         // getMountPoint(disks[i].device, disks[i].mountpoint, i, function (mntPoint, j) {
