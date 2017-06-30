@@ -62,7 +62,8 @@ electron.app.on('ready', function()
 			icon: 'app/img/icon.png'
 		});
 
-		mainWindow.loadURL(path.normalize('file://' + __dirname + '/app/index.html'));
+		var extraParams = process.argv.length > 1 ? process.argv[1] : "";
+		mainWindow.loadURL(path.normalize('file://' + __dirname + '/app/index.html?' + extraParams));
 
 		mainWindow.on('closed', function ()
 		{
