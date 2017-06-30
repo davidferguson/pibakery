@@ -116,6 +116,12 @@ function initialise () {
       ipcRenderer.on('testBlock', function (event) {
         importTestBlock(dialog.showOpenDialog({properties: ['openDirectory']})[0])
       })
+      var url = new URL(window.location.href)
+      if(url.searchParams.get('importRecipe')){
+        setTimeout(function(){
+          importRecipe(url.searchParams.get('importRecipe'))
+        },2000)
+      }
     })
   })
 }
