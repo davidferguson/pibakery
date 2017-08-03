@@ -1,0 +1,21 @@
+{
+	"name": "sshenable",
+	"text": "%1 secure shell (SSH) server",
+	"script": "sshenable.sh",
+	"args": [
+		{
+			"type": "menu",
+			"options": ["Enable", "Disable"]
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "software",
+	"category":"software",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Enable or disable the SSH server.",
+	"longDescription":"By default, the built in secure shell (SSH) server does not run on startup. Using this block you can enable it, or disable it if you have already enabled it."
+}
