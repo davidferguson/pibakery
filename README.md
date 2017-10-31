@@ -12,7 +12,6 @@ PiBakery is a a blocks based drag and drop tool that allows you to customise and
 For more information see www.PiBakery.org or follow [@PiBakery](http://twitter.com/PiBakery) on Twitter.
 
 </br>
----
 
 # Installing from source
 
