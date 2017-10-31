@@ -40,3 +40,6 @@ Lastly you'll need to create a file `images.json` inside the `os` folder which t
 You can then run PiBakery using
 </br>
 `npm start`
+
+# PiBakery on Linux
+PiBakery should run on Linux if you build from source, however you will need to have `kpartx` and `p7zip` installed. Most distributions have these in package repositories.
