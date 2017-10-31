@@ -36,6 +36,8 @@
     7zip-license.txt
 */
 
+//memes
+
 Blockly.Blocks['onboot'] = {
   init: function() {
     this.appendDummyInput()
