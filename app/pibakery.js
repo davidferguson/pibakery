@@ -2370,7 +2370,7 @@ function exportRecipe () {
     return
   }
 
-  var blocksXml = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace))
+  var blocksXml = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(workspace))
 
   var savePath = path.normalize(dialog.showSaveDialog(
     {
