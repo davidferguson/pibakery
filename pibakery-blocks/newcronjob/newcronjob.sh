@@ -41,7 +41,7 @@ fi
 if [ $7 == "root" ]; then
   (crontab -l ; echo "$1 $2 $3 $4 $5 $6") | crontab -
 else
-  su - pi -c "(crontab -l ; echo "$1 $2 $3 $4 $5 $6") | crontab -"
+  su - pi -c "(crontab -l ; echo \"$1 $2 $3 $4 $5 $6\") | crontab -"
 fi
 
 exit 0

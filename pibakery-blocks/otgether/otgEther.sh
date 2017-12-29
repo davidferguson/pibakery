@@ -32,19 +32,21 @@ fi
 echo "g_ether" | tee -a /etc/modules
 
 # Remove the static IP stuff from /etc/dhcpcd.conf if it exists
-startLine=$(grep -n "interface usb0 " /etc/dhcpcd.conf | cut -d : -f 1)
-if [ ! -z "$startLine" ]
-then
-  matchLine=$((startLine+1))
-  grep -n "static " /etc/dhcpcd.conf | cut -d : -f 1 | while read line
-  do
-    if [ $line -eq $matchLine ]
-    then
-      endLine=$line
-      sed -i "${startLine}d;${endLine}d" /etc/dhcpcd.conf
-    fi
-  done
+if [ -f /etc/dhcpcd.exit-hook ]; then
+  startLine=$(grep -n "if \[ \"\$interface\" = \"usb0\" \]; then" /etc/dhcpcd.exit-hook | cut -d : -f 1)
+  if [ ! -z "$startLine" ]
+  then
+    matchLine=$((startLine+2))
+    grep -n "fi" /etc/dhcpcd.exit-hook | cut -d : -f 1 | while read line
+    do
+      if [ $line -eq $matchLine ]
+      then
+        endLine=$line
+        sed -i "${startLine},${endLine}d" /etc/dhcpcd.exit-hook
+      fi
+    done
+  fi
 fi
 
-# Add the static IP to /etc/dhcpcd.conf
-echo -e "interface usb0 \nstatic ip_address=$1" | tee -a /etc/dhcpcd.conf
+# add the stattic IP to the usb0 interface
+echo -e "if [ \"\$interface\" = \"usb0\" ]; then\n  ip addr add $1 dev usb0\nfi" >> /etc/dhcpcd.exit-hook

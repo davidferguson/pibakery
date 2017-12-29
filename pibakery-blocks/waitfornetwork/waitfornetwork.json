@@ -1,0 +1,21 @@
+{
+	"name": "waitfornetwork",
+	"text": "Wait for network on boot? %1",
+	"script": "waitfornetwork.sh",
+	"args": [
+		{
+			"type": "menu",
+			"options": ["Yes", "No"]
+		}
+	],
+	"network": false,
+	"continue": true,
+	"type": "setting",
+	"category":"setting",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Change Wait for Network setting",
+	"longDescription":"By default, the pi will not wait for a network connection when booting. You may want to enable this setting if you rely on network mounted drives, or other network services."
+}

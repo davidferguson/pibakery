@@ -6,27 +6,27 @@
 		{
 			"type": "text",
 			"default": "*",
-			"maxLength":1
+			"maxLength":4
 		},
 		{
 			"type": "text",
 			"default": "*",
-			"maxLength":2
+			"maxLength":4
 		},
 		{
 			"type": "text",
 			"default": "*",
-			"maxLength":2
+			"maxLength":4
 		},
 		{
 			"type": "text",
 			"default": "*",
-			"maxLength":2
+			"maxLength":4
 		},
 		{
 			"type": "text",
 			"default": "*",
-			"maxLength":2
+			"maxLength":4
 		},
 		{
 			"type": "text",

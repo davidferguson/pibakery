@@ -1,7 +1,7 @@
 {
-  "version": 3.2,
-  "compressedMD5": "56424ce5b2fe4c4a61fc6e2eaaada5f3",
-  "downloadUrl": "https://github.com/davidferguson/pibakery-blocks/releases/download/v0.3.2/pibakery-blocks.zip",
+  "version": 3.3,
+  "compressedMD5": "13dd45ff1f2ae75eb9dac7d7163820c2",
+  "downloadUrl": "https://github.com/davidferguson/pibakery-blocks/releases/download/v0.3.3/pibakery-blocks.zip",
   "loadOrder": [
     "vncenable",
     "packageinstall",
