@@ -20,7 +20,7 @@
   "dependencies": {
     "chmod": "^0.2.1",
     "drivelist": "^5.0.16",
-    "drivelist-scanner": "https://github.com/davidferguson/drivelist-scanner/tarball/master",
+    "drivelist-scan": "https://github.com/davidferguson/drivelist-scan/tarball/master",
     "electron-localshortcut": "^0.6.1",
     "extract-zip": "^1.5.0",
     "fs-extra": "^0.30.0",
