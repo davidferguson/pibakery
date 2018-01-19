@@ -1,0 +1,27 @@
+{
+	"name": "downloadfile",
+	"text": "Git Clone: %1\\nSave to: %2\\nRequires internet connection\\nOptional\\nUsername: %3\\nPassword: %4",
+	"script": "gitClone.sh",
+	"args": [
+		{
+			"type": "text",
+			"default": "git@github.com:acrogenesis/macchanger.git",
+			"maxLength":0
+		},
+		{
+			"type": "text",
+			"default": "/home/pi/git-repo",
+			"maxLength":0
+		}
+	],
+	"network": true,
+	"continue": true,
+	"type": "network",
+	"category":"network",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Download a git repository from the internet to a location on your Raspberry Pi. This block requires an internet connection to work. If it's a privare repository it requires an ssh-key",
+	"longDescription":"This block allows you to enter a git remote URL along with a save location, and it will download the repo to that location. As this block will download the repo from the internet, an internet connection is required to use this block. If it's a privare repository it requires an ssh-key"
+}
