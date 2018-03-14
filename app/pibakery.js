@@ -1,6 +1,6 @@
 /*
     PiBakery - The easiest way to setup a Raspberry Pi
-    Copyright (C) 2016  David Ferguson
+    Copyright (C) 2016-2018  David Ferguson
 
     This file is part of PiBakery.
 
@@ -183,10 +183,8 @@ function checkOs (data, i, cb) {
   * @return null
 */
 function fixBlocks () {
-  isOnline(function (error, online) {
-    if (error) {
-      console.error(error)
-    }
+  isOnline().then(function(online) {
+
     var hider = document.createElement('div')
     hider.setAttribute('id', 'hider')
     document.body.appendChild(hider)
@@ -417,11 +415,7 @@ function checkForRaspbianUpdates (cb) {
 function updateBlocks (src, downloadHash, newBlocksInfo, fixing) {
   var writeDiv, title, writeAnimationDiv, writeAnimation, writeProgress
 
-  isOnline(function (error, online) {
-    if (error) {
-      console.error(error)
-      return
-    }
+  isOnline().then(function(online) {
 
     if (! online) {
       if (fixing) {
@@ -692,11 +686,7 @@ function updateRaspbian (osJsonInfo) {
 
   var writeDiv, title, writeAnimationDiv, writeAnimation, writeProgress, writeDetailedProgress
 
-  isOnline(function (error, online) {
-    if (error) {
-      console.error(error)
-      return
-    }
+  isOnline().then(function(online) {
 
     var hider = document.createElement('div')
     hider.setAttribute('id', 'hider')

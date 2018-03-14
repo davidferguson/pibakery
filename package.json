@@ -25,7 +25,7 @@
     "extract-zip": "^1.5.0",
     "fs-extra": "^0.30.0",
     "is-elevated": "^1.0.0",
-    "is-online": "^5.1.2",
+    "is-online": "^7.0.0",
     "md5-file": "^3.1.1",
     "node-df": "https://github.com/beeman/node-df/tarball/master",
     "node-shell-parser": "^0.2.1",
