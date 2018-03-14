@@ -45,6 +45,10 @@ with open("/etc/wpa_supplicant/wpa_supplicant.conf", "a") as wifiFile:
 
 os.system("wpa_cli reconfigure")
 time.sleep(5)
+os.system("systemctl daemon-reload")
+time.sleep(5)
+os.system("systemctl restart dhcpcd")
+time.sleep(5)
 
 # It's likely that the block following this one will be one that uses the
 # internet - such as a download file or apt-get block. It takes a few seconds
