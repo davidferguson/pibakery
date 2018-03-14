@@ -1784,7 +1784,7 @@ function getDriveListWin (callback) {
     }else {
       var length = disks.length
 
-      var drives = shellParser(execSync('C:\Windows\System32\wbem\wmic logicaldisk get caption,volumename,drivetype', {stdio: [null, null, null]}).toString())
+      var drives = shellParser(execSync('C:\\Windows\\System32\\wbem\\wmic logicaldisk get caption,volumename,drivetype', {stdio: [null, null, null]}).toString())
 
       for ( var x = 0; x < disks.length; x++) {
         for ( var y = 0; y < drives.length; y++) {
