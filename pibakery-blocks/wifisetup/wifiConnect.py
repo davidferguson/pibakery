@@ -31,6 +31,7 @@ network={
 wifiSSID = sys.argv[1]
 wifiPSK = sys.argv[2]
 wifiType = sys.argv[3]
+countryCode = sys.argv[4]
 
 if wifiSSID != "" and wifiType != "":
 	if wifiPSK == "" or wifiType == "Open (no password)":
@@ -42,6 +43,10 @@ if wifiSSID != "" and wifiType != "":
 
 with open("/etc/wpa_supplicant/wpa_supplicant.conf", "a") as wifiFile:
 	wifiFile.write(wifiText)
+
+
+# raspbian 2018-03-14 now requires us to have the country= line.
+os.system('raspi-config nonint do_wifi_country "' + countryCode + '"')
 
 os.system("wpa_cli reconfigure")
 time.sleep(5)
