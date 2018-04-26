@@ -1,0 +1,16 @@
+{
+	"name": "otgSSHviaUSB",
+	"text": "Set Pi Zero OTG Mode to Serial and allow ssh with (example): ssh pi@raspberry.local",
+	"script": "otgSSHviaUSB.sh",
+	"args": [],
+	"network": true,
+	"continue": true,
+	"type": "network",
+	"category":"otg",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"Set the Pi Zero to allow ssh connection and also via usb serial.",
+	"longDescription":"Set the Pi Zero to allow ssh connection and also via usb serial."
+}
