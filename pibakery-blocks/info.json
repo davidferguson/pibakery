@@ -18,6 +18,7 @@
     "bootbehaviour",
     "changepass",
     "sethostname",
+    "enablessh",
     "newcronjob",
     "uartconsole",
     "setspi",

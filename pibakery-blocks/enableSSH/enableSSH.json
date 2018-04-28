@@ -1,7 +1,7 @@
 {
-	"name": "enableSSH",
+	"name": "enablessh",
 	"text": "enable SSH service",
-	"script": "enableSSH.sh",
+	"script": "enablessh.sh",
 	"args": [],
 	"network": false,
 	"continue": true,
