@@ -1,7 +1,7 @@
 {
-	"name": "otgSSHviaUSB",
+	"name": "otgsshviausb",
 	"text": "Set Pi Zero OTG Mode to Ethernet and enable SSH.\\nWith Static IP: %1\\n.  Requires restart to take effect",
-	"script": "otgSSHviaUSB.sh",
+	"script": "otgsshviausb.sh",
 	"args": [
 		{
 			"type": "text",
