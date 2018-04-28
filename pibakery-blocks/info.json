@@ -5,6 +5,7 @@
   "loadOrder": [
     "vncenable",
     "packageinstall",
+    "updateupgrade",  
     "lampinstall",
     "iqaudio",
     "wifisetup",
