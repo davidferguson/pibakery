@@ -12,7 +12,7 @@
 	"network": false,
 	"continue": true,
 	"type": "network",
-	"category":"otg",
+	"category":"bundles",
 	"supportedOperatingSystems": [
 		"raspbian-pibakery.img",
 		"raspbian-lite-pibakery.img"
