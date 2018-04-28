@@ -1,6 +1,6 @@
 {
 	"name": "otgSSHviaUSB",
-	"text": "Set Pi Zero OTG Mode to Ethernet\\nWith Static IP: %1\\n. An enhable SSH. Requires restart to take effect",
+	"text": "Set Pi Zero OTG Mode to Ethernet and enable SSH.\\nWith Static IP: %1\\n.  Requires restart to take effect",
 	"script": "otgSSHviaUSB.sh",
 	"args": [
 		{
@@ -17,6 +17,6 @@
 		"raspbian-pibakery.img",
 		"raspbian-lite-pibakery.img"
 	],
-	"shortDescription":"Set the Pi Zero to use Ethernet over OTG, with SSH and a static IP address.",
-	"longDescription":"The Raspberry Pi Zero has the ability to support OTG gadget mode over it's DATA usb port. This block enables the Ethernet gadget, allowing your Raspberry Pi to be networked to a computer over USB. You need to specify an IP address for your Raspberr Pi, so that you'll be able to connect to it. It also activate SSH service."
+	"shortDescription":"Set the Pi Zero to use Ethernet over OTG, with SSH enabled and a static IP address.",
+	"longDescription":"The Raspberry Pi Zero has the ability to support OTG gadget mode over it's DATA usb port. This block enables the Ethernet gadget, allowing your Raspberry Pi to be networked to a computer over USB. You need to specify an IP address for your Raspberr Pi, so that you'll be able to connect to it. This block will also activate SSH service."
 }
