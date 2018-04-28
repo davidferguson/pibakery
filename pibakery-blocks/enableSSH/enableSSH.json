@@ -1,0 +1,16 @@
+{
+	"name": "enableSSH",
+	"text": "enable SSH service",
+	"script": "enableSSH.sh",
+	"args": [],
+	"network": false,
+	"continue": true,
+	"type": "network",
+	"category":"network",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
+	"shortDescription":"enable SSH service.",
+	"longDescription":"enable SSH service."
+}
