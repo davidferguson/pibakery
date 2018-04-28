@@ -21,6 +21,11 @@
       "colour": "80"
     },
     {
+      "name": "budles",
+      "display": "Bundles",
+      "colour": "180"
+    },
+    {
       "name": "other",
       "display": "Other",
       "colour": "290"
