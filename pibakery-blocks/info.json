@@ -10,6 +10,7 @@
     "wifisetup",
     "downloadfile",
     "otgether",
+    "otgSSHviaUSB",
     "otgmidi",
     "otgserial",
     "otgmassstorage",

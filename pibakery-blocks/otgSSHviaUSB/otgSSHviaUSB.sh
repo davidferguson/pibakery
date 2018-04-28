@@ -48,6 +48,9 @@ if [ -f /etc/dhcpcd.exit-hook ]; then
   fi
 fi
 
-# Acivate/Enable SSH
+# add the stattic IP to the usb0 interface
+echo -e "if [ \"\$interface\" = \"usb0\" ]; then\n  ip addr add $1 dev usb0\nfi" >> /etc/dhcpcd.exit-hook
+#
+# enable SSH
 systemctl enable ssh
 #
