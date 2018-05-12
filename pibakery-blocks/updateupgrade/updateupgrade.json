@@ -7,6 +7,10 @@
 	"continue": true,
 	"type": "software",
 	"category":"software",
+	"supportedOperatingSystems": [
+		"raspbian-pibakery.img",
+		"raspbian-lite-pibakery.img"
+	],
 	"shortDescription":"Upgrade all installed packages",
 	"longDescription":"This block is exactly the same as running sudo apt-get update and sudo apt-get -y upgrade, which upgrades all the packages you have installed on your Raspberry Pi. An internet connection will be required for this to work."
 }

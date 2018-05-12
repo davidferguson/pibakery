@@ -2,7 +2,7 @@
   "categories": [
     {
       "name": "software",
-      "display": "Programs",
+      "display": "Software",
       "colour": "120"
     },
     {
@@ -19,6 +19,11 @@
       "name": "otg",
       "display": "Pi Zero OTG",
       "colour": "80"
+    },
+    {
+      "name": "budles",
+      "display": "Bundles",
+      "colour": "180"
     },
     {
       "name": "other",
