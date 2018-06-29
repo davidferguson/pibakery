@@ -48,6 +48,6 @@ The latest version of PiBakery, *PiBakery v2*, is a complete re-write of the ori
 - Ability to edit **any** Raspbian SD card, not just ones that have been written with PiBakery
 - More robust Linux support
 - Ability to add multiple block sources, so the user can maintain their own block repo with their own custom blocks
-- Importing of recipies (.xml files) created with older versions of PiBakery no longer fail, instead they are converted automatically into the new format
+- Importing of recipes (.xml files) created with older versions of PiBakery no longer fail, instead they are converted automatically into the new format
 - The entire program no longer runs as root/admin. Instead, just the writer process is elevated when needed to be
 - Modularised code to increase readability, and add option for command line mode in the future
