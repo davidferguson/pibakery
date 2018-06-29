@@ -1,0 +1,15 @@
+[Unit]
+Description=Light Display Manager
+Documentation=man:lightdm(1)
+After=systemd-user-sessions.service
+
+[Service]
+# temporary safety check until all DMs are converted to correct
+# display-manager.service symlink handling
+ExecStartPre=/bin/sh -c '[ "$(cat /etc/X11/default-display-manager 2>/dev/null)" = "/usr/sbin/lightdm" ]'
+#ExecStart=/usr/sbin/lightdm
+#ExecStart=/bin/openvt -s -w /opt/PiBakery/display.sh
+ExecStart=/opt/PiBakery/display.sh
+Restart=always
+BusName=org.freedesktop.DisplayManager
+TimeoutSec=0

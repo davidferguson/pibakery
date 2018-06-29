@@ -1,40 +1,20 @@
 /*
-    PiBakery - The easiest way to setup a Raspberry Pi
-    Copyright (C) 2016  David Ferguson
-
-    This file is part of PiBakery.
-
-    PiBakery is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    PiBakery is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with PiBakery.  If not, see <http://www.gnu.org/licenses/>.
-
-    PiBakery uses Google Blockly which is licensed under the Apache
-    License Version 2.0, a copy of which can be found in the file
-    ./app/blockly/LICENSE
-
-    PiBakery uses Win32DiskImager (Image Writer for Windows) which is
-    licensed under the GNU General Public License as published by the
-    Free Software Foundation, version 2 or later, a copy of which can
-    be found in the file ./CommandLineDiskImager/GPL-2
-
-    PiBakery uses p7zip which is licensed under the GNU General Public
-    License as published by the Free Software Foundation, version 2.1 or
-    later, a copy of which can be found in the file p7zip-license.txt
-
-    PiBakery uses 7zip (7za) which is licensed under the GNU Lesser
-    General Public License as published by the Free Software Foundation,
-    version 2.1 or later, a copy of which can be found in the file
-    7zip-license.txt
-*/
+ * PiBakery 2.0.0 - The easy to use setup tool for Raspberry Pi
+ * Copyright (C) 2019  David Ferguson <david@pibakery.org>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 Blockly.Blocks['onboot'] = {
   init: function() {

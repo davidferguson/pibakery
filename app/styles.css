@@ -1,110 +1,72 @@
-/*
-    PiBakery - The easiest way to setup a Raspberry Pi
-    Copyright (C) 2016  David Ferguson
-
-    This file is part of PiBakery.
-
-    PiBakery is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    PiBakery is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with PiBakery.  If not, see <http://www.gnu.org/licenses/>.
-
-    PiBakery uses Google Blockly which is licensed under the Apache
-    License Version 2.0, a copy of which can be found in the file
-    ./app/blockly/LICENSE
-
-    PiBakery uses Win32DiskImager (Image Writer for Windows) which is
-    licensed under the GNU General Public License as published by the
-    Free Software Foundation, version 2 or later, a copy of which can
-    be found in the file ./CommandLineDiskImager/GPL-2
-
-    PiBakery uses p7zip which is licensed under the GNU General Public
-    License as published by the Free Software Foundation, version 2.1 or
-    later, a copy of which can be found in the file p7zip-license.txt
-
-    PiBakery uses 7zip (7za) which is licensed under the GNU Lesser
-    General Public License as published by the Free Software Foundation,
-    version 2.1 or later, a copy of which can be found in the file
-    7zip-license.txt
-*/
-
 html {
   overflow: hidden;
   height: 100%;
 }
-body
-{
-	font-family:Arial, sans-serif;
+
+body {
+	font-family: 'Open Sans';
 	font-size: 16pt;
 	background: white;
 	margin: 0px;
   height: 100%;
   overflow: auto;
 }
-#header
-{
+
+#header {
 	background-color: #c6c6c6;
 	width: 100%;
 	height: 70px;
 }
-#credits
-{
+
+#credits {
   text-align: center;
   width: 100%;
   margin-top: 90px;
 }
-#blockly
-{
+
+#blockly {
 	border:0px solid #CCC;
 	padding-left:0;
 	height: 100%;
 }
-#blockly_editor
-{
+
+#blockly_editor {
 	width:100%;
 	height: calc(100% - 70px);
   display: none;
 }
+
 .blocklyToolboxDiv, #header {
   -webkit-user-select: none;
 }
-#description
-{
+
+#description {
 	width:49%;
 	float:right;
 	margin-top:0;
 }
-#button_run
-{
+
+#button_run {
 	margin-left:2%;
 }
-#logo
-{
-  font-size: 52px;
+
+#logo {
+  font-size: 48px;
   padding-left: 10px;
   padding-right: 10px;
-  padding-top: 3px;
   float:left;
   height:calc(100% - 3px);
 }
-.headerBtn
-{
+
+.headerBtn {
   width: 40px;
   margin-left: 5px;
   margin-right: 5px;
   text-align: center;
   cursor: pointer;
   font-size: 13px;
-  padding-right: 10px;
-  padding-left: 10px;
+  /*padding-right: 10px;
+  padding-left: 10px;*/
   padding-top: 7px;
   float:right;
   height:calc(100% - 7px);
@@ -115,24 +77,49 @@ body
   -ms-user-select: none;
   user-select: none;
 }
-.headerBtn p
-{
-  margin-top:4px;
+
+.headerBtn.wide {
+  width: 80px;
 }
-.headerBtn img
-{
+
+.wideBtn p {
+  float: right;
+}
+
+.headerBtn p {
+  margin-top: 4px;
+  font-size: 11px;
+}
+
+.headerBtn img {
   margin-top:2px;
 }
-#flashSD {
+
+.btnDisabled {
+  opacity: 0.4;
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+  -ms-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+
+#loadSD, #import {
   margin-left: 40px;
 }
-#sdImage
-{
+
+.sdImage {
   height:35px;
   cursor:pointer;
 }
-#hider
-{
+
+.slimImage {
+  height:17px;
+  cursor:pointer;
+}
+
+/* css styles for ui module begin here */
+#hider {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -140,9 +127,9 @@ body
   left: 0px;
   background-color: rgba(100,100,100,0.5);
 }
-#sdSelector
-{
-  width: 250px;
+
+/*#sdSelector*/#dialog {
+  width: 350px;
   height: 100px;
   background-color: white;
   position: absolute;
@@ -153,30 +140,31 @@ body
   border-radius: 7px;
   text-align: center;
 }
-#selectionTable
-{
+
+/*#selectionTable*/#dialogTable {
   font-size: 13px;
   margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
 }
-#sdChoice
-{
-  width: 110px;
+
+/*#sdChoice*/.dialogChoice {
+  width: 215px;
   float: right;
 }
-#osChoice
-{
+
+/*#osChoice {
   width: 110px;
   float: right;
-}
-#writeButton
-{
-  width: 100px;
+}*/
+
+/*#writeButton*/.dialogButton {
   margin-top: 12px;
-  margin-left: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
-#writingMessage
+
+/*#writingMessage
 {
   width: 250px;
   height: 200px;
@@ -188,41 +176,52 @@ body
   margin-left: -126px;
   border-radius: 7px;
   text-align: center;
-}
-#writeProgress
-{
+}*/
+
+/*#writeProgress {
   margin-top: 120px;
+}*/
+
+/*#writeProgressbar*/#dialogProgress {
+  margin-top: 8px;
 }
-#writeProgressbar
-{
-  height: 10px;
-  margin-top: -10px;
+
+#dialogProgressText {
+  margin-top: -1px;
+  font-size: 11px;
 }
-#writeDetailedProgress
+
+/*#writeDetailedProgress
 {
   margin-top: 9px;
   font-size: 11px;
-}
-#writeAnimation
-{
+}*/
+
+/*#writeAnimation*/#dialogImage {
   max-width: 160px;
   max-height: 90px;
 }
-.updateAnimation
+/*.updateAnimation
 {
   margin-top: 10px;
   margin-bottom: 10px;
-}
-#closeBtn
+}*/
+/*#closeBtn
 {
   margin-top: -7px;
-}
-.infoParagraph {
+}*/
+/*.infoParagraph {
   font-size: 12px;
   margin-left: 6px;
   margin-right: 6px;
-}
-.blockInfo {
+}*/
+/*.blockInfo {
+  font-size: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}*/
+
+#dialogInfo {
   font-size: 10px;
   padding-left: 10px;
   padding-right: 10px;

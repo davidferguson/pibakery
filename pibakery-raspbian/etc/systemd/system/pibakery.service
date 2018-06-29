@@ -1,0 +1,12 @@
+[Unit]
+Description=PiBakery Scripts
+After=multi-user.target
+
+[Service]
+Type=idle
+#ExecStart=/bin/openvt -s -w /opt/PiBakery/console.sh
+ExecStart=/opt/PiBakery/console.sh
+TimeoutSec=0
+
+[Install]
+WantedBy=multi-user.target
