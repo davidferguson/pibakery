@@ -5,7 +5,7 @@
 
 The blocks based, easy to use setup tool for Raspberry Pi
 
-![PiBakery demo screen](http://pibakery.org/img/blocks-on-workspace.png)
+![PiBakery demo screen](http://pibakery.org/img/blocks-on-workspace.png#2)
 
 PiBakery is a a blocks based drag and drop tool that allows you to customise and edit your Raspberry Pi without powering the Pi on. Simply insert your SD card into your computer, choose which features you want on your Pi, and hit **Write**. PiBakery will write the latest version of Raspbian to your SD card, with your customisations added too.
 
@@ -31,15 +31,23 @@ And install the required node modules using
 </br>
 This will take a few minutes to complete.
 
-If you're on macOS it's important you run `npm run setup` the first time [to create a folder inside Application Support](https://github.com/davidferguson/pibakery/issues/29) that will hold the operating system  .img files.
-
-Then you'll need to download and extract the Raspberry Pi operating system (currently only raspbian and raspbian lite) .img files into the `os/` directory. If you're on Windows or Linux, the directory is inside the `pibakery` folder, and if you're on macOS, it's located `/Library/Application Support/PiBakery/os`. The operating systems can be downloaded in `.7z` format for the [pibakery-raspbian releases page](https://github.com/davidferguson/pibakery-raspbian/releases).
-
-Lastly you'll need to create a file `images.json` inside the `os` folder which tells PiBakery which operating systems you have installed and available for use. Download the example file from [the pibakery-raspbian repo](https://raw.githubusercontent.com/davidferguson/pibakery-raspbian/master/images.json) and save it as `images.json` into the `os` folder where you stored the .img files.
-
 You can then run PiBakery using
 </br>
 `npm start`
 
 # PiBakery on Linux
-PiBakery should run on Linux if you build from source, however you will need to have `kpartx` and `p7zip` installed. Most distributions have these in package repositories.
+PiBakery should run on Linux if you build from source, however you will need to have `kpartx` installed. Most distributions have these in package repositories, and in Debian/Ubuntu can be installed with
+`sudo apt-get install kpartx`
+
+----
+
+# PiBakery v2
+The latest version of PiBakery, *PiBakery v2*, is a complete re-write of the original application, with many additional features, including:
+
+- PiBakery no longer bundles .img files in the installer/program. Instead, the user must supply their own Raspbian .img file. This means that any Raspbian-based .img can be used, with the possibility of other distros in the future
+- Ability to edit **any** Raspbian SD card, not just ones that have been written with PiBakery
+- More robust Linux support
+- Ability to add multiple block sources, so the user can maintain their own block repo with their own custom blocks
+- Importing of recipies (.xml files) created with older versions of PiBakery no longer fail, instead they are converted automatically into the new format
+- The entire program no longer runs as root/admin. Instead, just the writer process is elevated when needed to be
+- Modularised code to increase readability, and add option for command line mode in the future
