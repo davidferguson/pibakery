@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
     "build-mac": "find . -name .DS_Store -depth -exec rm {} \\; && npm dedupe && electron-packager ./ PiBakery --platform=darwin --arch=all --electron-version=2.0.2 --overwrite --prune --app-version=2.0.0 --icon=./app/img/icon.icns",
-    "build-win": "npm dedupe && electron-packager ./ PiBakery --platform=win32 --arch=ia32 --electron-version=2.0.2 --overwrite --prune --app-version=2.0.0 --icon=./app/img/icon.ico",
+    "build-win": "npm dedupe && electron-packager ./ PiBakery --platform=win32 --arch=all --electron-version=2.0.2 --overwrite --prune --app-version=2.0.0 --icon=./app/img/icon.ico",
     "build-linux": "find . -name .DS_Store -depth -exec rm {} \\; && npm dedupe && electron-packager ./ PiBakery --platform=linux --arch=all --electron-version=2.0.2 --overwrite --prune --app-version=2.0.0 --icon=./app/img/icon.icns"
   },
   "author": "David Ferguson <david@pibakery.org>",
