@@ -1,6 +1,6 @@
 /*
  * PiBakery 2.0.0 - The easy to use setup tool for Raspberry Pi
- * Copyright (C) 2019  David Ferguson <david@pibakery.org>
+ * Copyright (C) 2018  David Ferguson <david@pibakery.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
