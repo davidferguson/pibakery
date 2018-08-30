@@ -100,8 +100,10 @@ if (process.platform === 'win32' || process.platform === 'darwin') {
 
 
 function launchRootWriter () {
-  // hide this app in the dock
-  electron.app.dock.hide()
+  if (process.platform === 'darwin') {
+    // hide this app in the dock
+    electron.app.dock.hide()
+  }
 
   // get the command line arguments
   var socketPath = argv.socketpath
