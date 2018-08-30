@@ -1,0 +1,4 @@
+# make sure shell script line endings are set to lf.
+# if set to crlf for resources/pibakery-mount.sh bad things happen (see #164)
+
+*.sh    text eol=lf
