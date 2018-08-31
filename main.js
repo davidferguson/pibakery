@@ -158,6 +158,8 @@ function launchPiBakery () {
   electronLocalshortcut.register(mainWindow, 'CommandOrControl+Shift+Plus', function () {
     mainWindow.webContents.send('testBlock')
   })
+  
+  createMenu()
 }
 
 
