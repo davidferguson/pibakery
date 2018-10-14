@@ -51,3 +51,11 @@ The latest version of PiBakery, *PiBakery v2*, is a complete re-write of the ori
 - Importing of recipes (.xml files) created with older versions of PiBakery no longer fail, instead they are converted automatically into the new format
 - The entire program no longer runs as root/admin. Instead, just the writer process is elevated when needed to be
 - Modularised code to increase readability, and add option for command line mode in the future
+
+# Legal
+
+PiBakery is Copyright (c) 2018 David Ferguson, and is licenced under the GNU General Public License version 3 or later; please see the file `COPYING` for details.
+
+This project uses and distributes a binary of [Busybox](https://busybox.net) version 1.27.2 taken from Raspbian Stretch's [`busybox-static`](https://archive.raspbian.org/raspbian/pool/main/b/busybox/busybox-static_1.27.2-3_armhf.deb) package, the source code of which can be found [here](https://archive.raspbian.org/raspbian/pool/main/b/busybox/).
+
+
