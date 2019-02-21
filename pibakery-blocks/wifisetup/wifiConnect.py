@@ -47,7 +47,7 @@ os.system('raspi-config nonint do_wifi_country "' + countryCode + '"')
 with open("/etc/wpa_supplicant/wpa_supplicant.conf", "a") as wifiFile:
 	wifiFile.write(wifiText)
 
-os.system("wpa_cli reconfigure")
+os.system("wpa_cli -i wlan0 reconfigure")
 time.sleep(5)
 #os.system("systemctl daemon-reload")
 #time.sleep(5)
