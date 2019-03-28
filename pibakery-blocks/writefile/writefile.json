@@ -1,0 +1,32 @@
+{
+	"name": "writefile",
+	"text": "Write File\\nFile name and path %1\\nContent %2\\nNew Line Character %3\\nFile Type %4",
+	"script": "writefile.sh",
+	"network": false,
+	"continue": true,
+	"type": "setting",
+	"category": "setting",
+	"shortDescription":"Wrire a file to the pi",
+	"longDescription":"Write to the specified file using the input parameters specified",
+	"args": [
+		{
+			"type": "text",
+			"default": "/path/to/file",
+			"maxLength":0
+		},
+		{
+			"type": "text",
+			"default": "Content - use specified character for new line",
+			"maxLength":0
+		},
+		{
+			"type": "text",
+			"default": "+",
+			"maxLength":1
+		},
+		{
+			"type": "menu",
+			"options": ["Normal", "Executable"]
+		}
+	]
+}
