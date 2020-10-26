@@ -202,7 +202,7 @@ function createMenu () {
 
   if (process.platform === 'darwin') {
     template.unshift({
-      label: app.getName(),
+      label: electron.app.getName(),
       submenu: [
         {role: 'about'},
         {type: 'separator'},
